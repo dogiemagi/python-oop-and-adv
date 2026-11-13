@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python OOP and Advanced Handbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: fixed chapter rail on the left, single reading column on the right. */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15202b; --muted:#5a6775; --line:#dde2e8;
+  --accent:#1f5fae; --accent-soft:#e3edf9; --gold:#c98a00;
+  --code-bg:#0f1b2a; --code-ink:#e6edf5; --out-bg:#eef2f6; --good:#1b7a4b; --bad:#b3342b;
+  --k:#7cb7ff; --s:#a5d98b; --c:#6f8296; --n:#f0b66a; --f:#f3d37a; --d:#d6a6f5;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d141c; --panel:#141d28; --ink:#e4ebf3; --muted:#92a1b1; --line:#243242;
+    --accent:#6fb0ff; --accent-soft:#18283c; --gold:#e6b422;
+    --code-bg:#09111a; --code-ink:#e6edf5; --out-bg:#101a26; --good:#5fd49a; --bad:#ff8b80;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d141c; --panel:#141d28; --ink:#e4ebf3; --muted:#92a1b1; --line:#243242;
+  --accent:#6fb0ff; --accent-soft:#18283c; --gold:#e6b422;
+  --code-bg:#09111a; --code-ink:#e6edf5; --out-bg:#101a26; --good:#5fd49a; --bad:#ff8b80;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--body)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+.shell{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px 40px}
+.brand{font:700 18px/1.2 var(--display);padding:0 8px 12px}
+.brand small{display:block;font:400 12px var(--body);color:var(--muted);margin-top:4px}
+.search{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:400 14px var(--body);margin-bottom:6px}
+.progress{margin:10px 8px 14px;font-size:12px;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.group{font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:14px 8px 4px}
+.rail a.nav{display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:14px;line-height:1.35}
+.rail a.nav:hover{background:var(--accent-soft)}
+.rail a.nav.on{background:var(--accent-soft);font-weight:600;box-shadow:inset 3px 0 0 var(--accent)}
+.rail a.nav .tick{flex:none;width:16px;height:16px;margin-top:1px;border:1.5px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:10px;color:transparent;cursor:pointer;background:var(--panel)}
+.rail a.nav.done .tick{background:var(--good);border-color:var(--good);color:#fff}
+.subs{margin:2px 0 6px 32px;display:none;border-left:1px solid var(--line)}
+.nav.on + .subs{display:block}
+.subs a{display:block;padding:3px 10px;font-size:12.5px;color:var(--muted);text-decoration:none;line-height:1.35}
+.subs a:hover{color:var(--accent)}
+.themebtn{margin:14px 8px 0;font:500 12px var(--body);padding:6px 10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;cursor:pointer}
+
+main{padding:28px clamp(16px,4vw,56px) 80px;max-width:980px;width:100%}
+.menubtn{display:none}
+.hero{padding:8px 0 26px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.hero h1{font:700 clamp(30px,5vw,46px)/1.08 var(--display);margin:0 0 12px;text-wrap:balance}
+.hero p{max-width:62ch;color:var(--muted);margin:0 0 16px}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stats span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px}
+.stats b{font-variant-numeric:tabular-nums}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:20px}
+.map div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px}
+.map h4{margin:0 0 4px;font:600 13px var(--display)}
+.map p{margin:0;color:var(--muted);font-size:13px}
+
+.chapter{padding-top:34px;border-top:1px solid var(--line);margin-top:34px}
+.chapter:first-of-type{border-top:0;margin-top:0}
+h2{font:700 clamp(26px,3.6vw,34px)/1.15 var(--display);margin:0 0 14px;text-wrap:balance}
+h3{font:700 21px/1.25 var(--display);margin:34px 0 10px}
+h4{font:600 16px/1.35 var(--body);margin:22px 0 4px;color:var(--accent)}
+p,li{max-width:74ch}
+li{margin:4px 0}
+code{font:400 .88em var(--mono);background:var(--accent-soft);padding:.1em .38em;border-radius:5px}
+blockquote{margin:14px 0;padding:10px 16px;border-left:4px solid var(--gold);background:var(--panel);border-radius:0 8px 8px 0}
+blockquote p{margin:4px 0}
+.tablewrap{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;font-size:14px;width:100%;background:var(--panel)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft);font-weight:600}
+td code,th code{white-space:nowrap}
+
+.codeblock{position:relative;margin:14px 0 4px}
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;overflow-x:auto;padding:14px 16px;font:400 13.5px/1.55 var(--mono);tab-size:4}
+pre code{background:none;padding:0;font-size:inherit;color:inherit}
+.copy{position:absolute;top:8px;right:8px;font:500 11px var(--body);color:#c6d3e1;background:#22344a;border:1px solid #33475f;border-radius:6px;padding:3px 9px;cursor:pointer;opacity:.85}
+.copy:hover{opacity:1}
+.codeblock .lab{position:absolute;left:14px;top:-9px;font:500 10px var(--mono);background:var(--accent);color:#fff;border-radius:4px;padding:1px 6px;letter-spacing:.05em}
+.outwrap{margin:0 0 16px}
+.outwrap .olab{font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--good);margin:6px 2px 3px}
+.outwrap pre{background:var(--out-bg);color:var(--ink);border:1px solid var(--line);border-left:3px solid var(--good);border-radius:0 8px 8px 0;font-size:13px;padding:10px 14px}
+.tk{color:var(--k)} .ts{color:var(--s)} .tc{color:var(--c);font-style:italic} .tn{color:var(--n)} .tf{color:var(--f)} .td{color:var(--d)}
+
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:36px}
+.pager button,.markdone{font:500 14px var(--body);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer}
+.pager button:hover,.markdone:hover{border-color:var(--accent);color:var(--accent)}
+.markdone.done{background:var(--good);border-color:var(--good);color:#fff}
+.chapter-end{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+
+.quiz{margin-top:34px;border-top:1px solid var(--line);padding-top:34px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+.qcard h5{font:600 15px/1.45 var(--body);margin:0 0 10px;max-width:70ch}
+.opt{display:block;width:100%;text-align:left;font:400 14.5px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--panel))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--panel))}
+.exp{margin:8px 2px 0;font-size:14px;color:var(--muted)}
+.score{font:700 20px var(--display)}
+.hide{display:none!important}
+mark{background:#ffe58a;color:#222;border-radius:3px}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:fixed;z-index:20;inset:0 auto 0 0;width:min(320px,86vw);transform:translateX(-102%);transition:transform .2s;box-shadow:0 0 40px #0006}
+  body.open .rail{transform:none}
+  .menubtn{display:inline-block;position:sticky;top:8px;z-index:10;margin-bottom:8px;font:500 14px var(--body);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i,.rail{transition:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Chapters">
+    <div class="brand">Python OOP and Advanced<small>Core to expert, with runnable examples</small></div>
+    <input class="search" id="search" type="search" placeholder="Search topics, e.g. metaclass" aria-label="Search chapters">
+    <div class="progress"><span id="ptext">0 of 0 chapters done</span><div class="bar"><i id="pbar"></i></div></div>
+    <div id="navlist"></div>
+    <button class="themebtn" id="themebtn" type="button">Switch light / dark</button>
+  </nav>
+  <main id="main">
+    <button class="menubtn" id="menubtn" type="button">Chapters</button>
+    <header class="hero">
+      <h1>Python OOP and advanced concepts, start to finish</h1>
+      <p>Twenty-six chapters that take you from the object model and classes through inheritance, the data model, descriptors, metaclasses, generators, async, typing, patterns, testing and performance. Every code sample was executed and the output shown below it is the real output.</p>
+      <div class="stats"><span><b>26</b> chapters</span><span><b>109</b> code examples</span><span><b>20</b> quiz questions</span><span>Python 3.12+ syntax</span></div>
+      <div class="map">
+        <div><h4>Part I · OOP (1 to 8)</h4><p>Object model, classes, encapsulation, inheritance, polymorphism, abstraction, dunder methods, dataclasses and enums.</p></div>
+        <div><h4>Part II · Advanced (9 to 18)</h4><p>Descriptors, metaclasses, decorators, iterators, context managers, exceptions, concurrency, pattern matching, typing, memory.</p></div>
+        <div><h4>Part III · Engineering (19 to 23)</h4><p>Modules and packaging, design principles and patterns, testing, standard library, performance.</p></div>
+        <div><h4>Part IV · Practice (24 to 26)</h4><p>Interview answers, projects, roadmap, cheat sheet, and a self-test quiz.</p></div>
+      </div>
+    </header>
+    <section class="chapter" id="1-python-object-model-foundations" data-title="1. Python object model foundations"><h2 id="1-python-object-model-foundations">1. Python object model foundations</h2>
+<p>Everything in OOP rests on one fact: <strong>in Python everything is an object</strong>. Integers, functions, classes, modules, even <code>None</code> are objects with an identity, a type, and a value.</p>
+<h3 id="11-names-objects-and-references">1.1 Names, objects and references</h3>
+<p>A variable is a <em>name bound to an object</em>, not a box holding a value. Assignment never copies; it binds.</p>
+<pre><code class="language-python">a = [1, 2, 3]
+b = a            # same object, two names
+b.append(4)
+print(a)         # the change is visible through both names
+print(a is b)    # identity check
+print(a == [1, 2, 3, 4])  # equality check (value)
+</code></pre>
+<pre><code class="language-output">[1, 2, 3, 4]
+True
+True
+</code></pre>
+<blockquote>
+<p><strong>Rule:</strong> <code>is</code> compares identity (same object). <code>==</code> compares value (calls <code>__eq__</code>). Use <code>is</code> only for singletons such as <code>None</code>, <code>True</code>, <code>False</code>.</p>
+</blockquote>
+<h3 id="12-mutable-vs-immutable">1.2 Mutable vs immutable</h3>
+<p>Immutable: <code>int, float, complex, bool, str, bytes, tuple, frozenset, range</code>. Mutable: <code>list, dict, set, bytearray</code>, and most user-defined objects.</p>
+<pre><code class="language-python">def add_item(item, bucket=[]):   # classic bug: default evaluated ONCE at def time
+    bucket.append(item)
+    return bucket
+
+print(add_item(1))
+print(add_item(2))               # surprise: same list reused
+
+def add_item_safe(item, bucket=None):
+    if bucket is None:
+        bucket = []
+    bucket.append(item)
+    return bucket
+
+print(add_item_safe(1), add_item_safe(2))
+</code></pre>
+<pre><code class="language-output">[1]
+[1, 2]
+[1] [2]
+</code></pre>
+<h3 id="13-introspection-toolkit">1.3 Introspection toolkit</h3>
+<pre><code class="language-python">class Demo:
+    x = 10
+    def hello(self): return &quot;hi&quot;
+
+d = Demo()
+print(type(d), type(Demo), type(type))
+print(isinstance(d, Demo), issubclass(Demo, object))
+print(hasattr(d, &quot;x&quot;), getattr(d, &quot;y&quot;, &quot;default&quot;))
+setattr(d, &quot;y&quot;, 5)
+print(vars(d))                    # instance __dict__
+print([n for n in dir(d) if not n.startswith(&quot;__&quot;)])
+print(callable(d.hello), d.hello.__name__)
+</code></pre>
+<pre><code class="language-output">&lt;class '__main__.Demo'&gt; &lt;class 'type'&gt; &lt;class 'type'&gt;
+True True
+True default
+{'y': 5}
+['hello', 'x', 'y']
+True hello
+</code></pre>
+<p>Useful built-ins: <code>type, id, isinstance, issubclass, hasattr, getattr, setattr, delattr, dir, vars, callable, help</code>. The <code>inspect</code> module goes deeper (<code>inspect.signature</code>, <code>getmembers</code>, <code>getsource</code>).</p>
+<h3 id="14-scope-legb">1.4 Scope: LEGB</h3>
+<p>Name lookup order: <strong>L</strong>ocal, <strong>E</strong>nclosing, <strong>G</strong>lobal, <strong>B</strong>uilt-in. Use <code>global</code> and <code>nonlocal</code> to rebind outer names.</p>
+<pre><code class="language-python">x = &quot;global&quot;
+def outer():
+    x = &quot;enclosing&quot;
+    def inner():
+        nonlocal x
+        x = &quot;changed by inner&quot;
+    inner()
+    return x
+print(outer(), x)
+</code></pre>
+<pre><code class="language-output">changed by inner global
+</code></pre>
+<h3 id="15-copying-objects">1.5 Copying objects</h3>
+<pre><code class="language-python">import copy
+orig = [[1, 2], [3, 4]]
+shallow = copy.copy(orig)
+deep = copy.deepcopy(orig)
+orig[0].append(99)
+print(shallow[0])   # shares inner list
+print(deep[0])      # independent
+</code></pre>
+<pre><code class="language-output">[1, 2, 99]
+[1, 2]
+</code></pre>
+<h3 id="16-truthiness-equality-and-hashing-basics">1.6 Truthiness, equality and hashing basics</h3>
+<p>Falsy values: <code>None, False, 0, 0.0, "", [], {}, set(), ()</code> and any object whose <code>__bool__</code> returns False or <code>__len__</code> returns 0. Objects used as dict keys or set members must be <strong>hashable</strong>: <code>a == b</code> implies <code>hash(a) == hash(b)</code>, and the hash must not change while the object lives in the container.</p>
+<h3 id="17-quick-refresher-on-core-syntax-used-below">1.7 Quick refresher on core syntax used below</h3>
+<p>Functions with <code>*args, **kwargs</code>, keyword-only (<code>*</code>) and positional-only (<code>/</code>) parameters, f-strings, comprehensions, unpacking (<code>a, *rest = seq</code>), the walrus operator <code>:=</code>, and <code>match</code> statements (covered in chapter 16).</p>
+<pre><code class="language-python">def f(pos_only, /, normal, *, kw_only, **extra):
+    return pos_only, normal, kw_only, extra
+
+print(f(1, 2, kw_only=3, z=4))
+first, *middle, last = range(6)
+print(first, middle, last)
+if (n := len(&quot;hello&quot;)) &gt; 3:
+    print(f&quot;long word of {n} letters&quot;)
+</code></pre>
+<pre><code class="language-output">(1, 2, 3, {'z': 4})
+0 [1, 2, 3, 4] 5
+long word of 5 letters
+</code></pre>
+</section>
+<section class="chapter" id="2-classes-and-objects" data-title="2. Classes and objects"><h2 id="2-classes-and-objects">2. Classes and objects</h2>
+<h3 id="21-defining-a-class">2.1 Defining a class</h3>
+<p>A class is a blueprint; an object (instance) is a concrete thing built from it. A <code>class</code> statement itself creates a class object at runtime.</p>
+<pre><code class="language-python">class Dog:
+    species = &quot;Canis familiaris&quot;      # class attribute: shared by all instances
+
+    def __init__(self, name, age):    # initializer
+        self.name = name              # instance attributes: per object
+        self.age = age
+
+    def bark(self):                   # instance method
+        return f&quot;{self.name} says woof&quot;
+
+rex = Dog(&quot;Rex&quot;, 3)
+print(rex.bark(), rex.species)
+print(Dog.__dict__.keys() &gt;= {&quot;bark&quot;, &quot;species&quot;})
+print(rex.__dict__)
+</code></pre>
+<pre><code class="language-output">Rex says woof Canis familiaris
+True
+{'name': 'Rex', 'age': 3}
+</code></pre>
+<p><code>self</code> is just the conventional name for the first parameter. <code>rex.bark()</code> is sugar for <code>Dog.bark(rex)</code>.</p>
+<h3 id="22-class-vs-instance-attributes">2.2 Class vs instance attributes</h3>
+<pre><code class="language-python">class Counter:
+    count = 0                 # class attribute
+    def __init__(self):
+        Counter.count += 1    # modify via class name
+        self.id = Counter.count
+
+a, b = Counter(), Counter()
+print(Counter.count, a.id, b.id)
+a.count = 100                 # creates an INSTANCE attribute that shadows the class one
+print(a.count, b.count, Counter.count)
+</code></pre>
+<pre><code class="language-output">2 1 2
+100 2 2
+</code></pre>
+<p>Attribute lookup order for <code>obj.x</code>: data descriptors on the type, then <code>obj.__dict__</code>, then non-data descriptors / class attributes along the MRO, then <code>__getattr__</code>.</p>
+<h3 id="23-three-kinds-of-methods">2.3 Three kinds of methods</h3>
+<pre><code class="language-python">class Pizza:
+    def __init__(self, toppings):
+        self.toppings = toppings
+
+    def describe(self):                 # instance method: gets self
+        return f&quot;Pizza with {', '.join(self.toppings)}&quot;
+
+    @classmethod
+    def margherita(cls):                # class method: gets cls; alternative constructor
+        return cls([&quot;mozzarella&quot;, &quot;tomato&quot;])
+
+    @staticmethod
+    def is_valid_topping(t):            # static method: no self/cls; a namespaced function
+        return t in {&quot;cheese&quot;, &quot;ham&quot;, &quot;tomato&quot;, &quot;mozzarella&quot;}
+
+print(Pizza.margherita().describe())
+print(Pizza.is_valid_topping(&quot;ham&quot;))
+</code></pre>
+<pre><code class="language-output">Pizza with mozzarella, tomato
+True
+</code></pre>
+<p>Use <code>@classmethod</code> for alternative constructors and anything that must work with subclasses; <code>@staticmethod</code> for utility functions logically related to the class.</p>
+<h3 id="231-bound-vs-unbound-methods">2.3.1 Bound vs unbound methods</h3>
+<pre><code class="language-python">class A:
+    def m(self): return &quot;m&quot;
+
+a = A()
+bound = a.m
+print(bound.__self__ is a, bound.__func__ is A.m)
+print(A.m(a))            # calling the plain function manually
+</code></pre>
+<pre><code class="language-output">True True
+m
+</code></pre>
+<h3 id="24-__new__-vs-__init__-and-__del__">2.4 <code>__new__</code> vs <code>__init__</code>, and <code>__del__</code></h3>
+<p><code>__new__(cls, ...)</code> <em>creates</em> the instance (static method, returns the object). <code>__init__(self, ...)</code> <em>initializes</em> it. Override <code>__new__</code> for immutable subclasses, singletons and caches.</p>
+<pre><code class="language-python">class Upper(str):
+    def __new__(cls, value):
+        return super().__new__(cls, value.upper())
+
+print(Upper(&quot;hello&quot;))
+
+class Tracked:
+    def __init__(self): print(&quot;init&quot;)
+    def __del__(self): print(&quot;del (finalizer; timing not guaranteed)&quot;)
+
+t = Tracked()
+del t
+</code></pre>
+<pre><code class="language-output">HELLO
+init
+del (finalizer; timing not guaranteed)
+</code></pre>
+<p>Avoid relying on <code>__del__</code>; prefer context managers or <code>weakref.finalize</code>.</p>
+<h3 id="25-__slots__">2.5 <code>__slots__</code></h3>
+<p>Declaring <code>__slots__</code> removes the per-instance <code>__dict__</code>, saving memory and preventing arbitrary new attributes.</p>
+<pre><code class="language-python">import sys
+class Plain:
+    def __init__(self): self.a = 1; self.b = 2
+class Slotted:
+    __slots__ = (&quot;a&quot;, &quot;b&quot;)
+    def __init__(self): self.a = 1; self.b = 2
+
+p, s = Plain(), Slotted()
+print(hasattr(p, &quot;__dict__&quot;), hasattr(s, &quot;__dict__&quot;))
+try:
+    s.c = 3
+except AttributeError as e:
+    print(&quot;AttributeError:&quot;, e)
+</code></pre>
+<pre><code class="language-output">True False
+AttributeError: 'Slotted' object has no attribute 'c' and no __dict__ for setting new attributes
+</code></pre>
+<p>Caveats: no <code>__weakref__</code> unless you add it to slots, multiple inheritance with non-empty slots conflicts, and no default class-level values for slot names.</p>
+<h3 id="26-dynamic-attributes-and-classes">2.6 Dynamic attributes and classes</h3>
+<p>Objects accept new attributes at runtime (unless slotted), and classes can be created with <code>type(name, bases, namespace)</code>.</p>
+<pre><code class="language-python">Point = type(&quot;Point&quot;, (), {&quot;dims&quot;: 2, &quot;norm&quot;: lambda self: (self.x**2 + self.y**2) ** 0.5})
+p = Point(); p.x, p.y = 3, 4
+print(p.norm(), Point.__name__)
+</code></pre>
+<pre><code class="language-output">5.0 Point
+</code></pre>
+<h3 id="27-naming-conventions">2.7 Naming conventions</h3>
+<p><code>name</code> public, <code>_name</code> internal by convention, <code>__name</code> name-mangled, <code>__name__</code> reserved dunder. Classes use <code>CapWords</code>, functions and variables <code>snake_case</code>, constants <code>UPPER_SNAKE</code>.</p>
+</section>
+<section class="chapter" id="3-encapsulation-and-properties" data-title="3. Encapsulation and properties"><h2 id="3-encapsulation-and-properties">3. Encapsulation and properties</h2>
+<p>Encapsulation means bundling data with the methods that operate on it and controlling access. Python relies on convention and descriptors, not hard keywords.</p>
+<h3 id="31-public-protected-private">3.1 Public, protected, private</h3>
+<pre><code class="language-python">class Account:
+    def __init__(self, owner, balance):
+        self.owner = owner          # public
+        self._balance = balance     # &quot;protected&quot; by convention
+        self.__pin = &quot;1234&quot;         # name-mangled to _Account__pin
+
+acc = Account(&quot;Asha&quot;, 100)
+print(acc._balance)
+print([n for n in vars(acc)])
+try:
+    acc.__pin
+except AttributeError:
+    print(&quot;no attribute __pin (it was mangled)&quot;)
+print(acc._Account__pin)            # still reachable: mangling avoids clashes, it is not security
+</code></pre>
+<pre><code class="language-output">100
+['owner', '_balance', '_Account__pin']
+no attribute __pin (it was mangled)
+1234
+</code></pre>
+<h3 id="32-properties">3.2 Properties</h3>
+<p><code>@property</code> lets you expose an attribute while keeping validation and computed values behind the scenes.</p>
+<pre><code class="language-python">class Temperature:
+    def __init__(self, celsius):
+        self.celsius = celsius            # goes through the setter
+
+    @property
+    def celsius(self):
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value):
+        if value &lt; -273.15:
+            raise ValueError(&quot;below absolute zero&quot;)
+        self._celsius = value
+
+    @celsius.deleter
+    def celsius(self):
+        del self._celsius
+
+    @property
+    def fahrenheit(self):                 # read-only computed property
+        return self._celsius * 9 / 5 + 32
+
+t = Temperature(25)
+print(t.fahrenheit)
+try:
+    t.celsius = -300
+except ValueError as e:
+    print(e)
+</code></pre>
+<pre><code class="language-output">77.0
+below absolute zero
+</code></pre>
+<p>Start with plain attributes; upgrade to a property later without changing callers. That is why Python needs no getter/setter boilerplate.</p>
+<h3 id="33-controlling-attribute-access">3.3 Controlling attribute access</h3>
+<pre><code class="language-python">class Strict:
+    def __getattr__(self, name):          # only called when normal lookup FAILS
+        return f&quot;&lt;missing {name}&gt;&quot;
+    def __setattr__(self, name, value):   # called on EVERY assignment
+        if name.startswith(&quot;_&quot;):
+            raise AttributeError(&quot;no private attrs&quot;)
+        super().__setattr__(name, value)
+    def __delattr__(self, name):
+        print(&quot;deleting&quot;, name)
+        super().__delattr__(name)
+
+s = Strict()
+s.a = 1
+print(s.a, s.zzz)
+del s.a
+</code></pre>
+<pre><code class="language-output">1 &lt;missing zzz&gt;
+deleting a
+</code></pre>
+<p><code>__getattribute__</code> runs on <em>every</em> access (use with care; always delegate to <code>super().__getattribute__</code> to avoid infinite recursion).</p>
+<h3 id="34-read-only-and-immutable-objects">3.4 Read-only and immutable objects</h3>
+<p>Use properties without setters, <code>@dataclass(frozen=True)</code>, <code>NamedTuple</code>, or <code>__slots__</code> plus <code>__setattr__</code> guards. Immutable objects are hashable, thread-safe and easier to reason about.</p>
+</section>
+<section class="chapter" id="4-inheritance" data-title="4. Inheritance"><h2 id="4-inheritance">4. Inheritance</h2>
+<h3 id="41-single-inheritance-and-super">4.1 Single inheritance and <code>super()</code></h3>
+<pre><code class="language-python">class Animal:
+    def __init__(self, name):
+        self.name = name
+    def speak(self):
+        return f&quot;{self.name} makes a sound&quot;
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)       # delegate to parent initializer
+        self.breed = breed
+    def speak(self):                 # override
+        return f&quot;{self.name} barks&quot;
+
+d = Dog(&quot;Rex&quot;, &quot;Lab&quot;)
+print(d.speak(), isinstance(d, Animal), issubclass(Dog, Animal))
+</code></pre>
+<pre><code class="language-output">Rex barks True True
+</code></pre>
+<h3 id="42-kinds-of-inheritance">4.2 Kinds of inheritance</h3>
+<p>Single (one parent), multilevel (A to B to C), hierarchical (one parent, many children), multiple (several parents) and hybrid (mix). All are expressible with the same syntax.</p>
+<pre><code class="language-python">class A: pass
+class B(A): pass          # single
+class C(B): pass          # multilevel
+class D(A): pass          # hierarchical with B
+class E(B, D): pass       # multiple/hybrid
+print([k.__name__ for k in E.__mro__])
+</code></pre>
+<pre><code class="language-output">['E', 'B', 'D', 'A', 'object']
+</code></pre>
+<h3 id="43-method-resolution-order-c3-linearization">4.3 Method Resolution Order (C3 linearization)</h3>
+<p>The MRO is the order in which Python searches classes. C3 guarantees children precede parents and the order of bases is preserved. View it with <code>Class.__mro__</code> or <code>Class.mro()</code>.</p>
+<pre><code class="language-python">class Base:
+    def who(self): return &quot;Base&quot;
+class Left(Base):
+    def who(self): return &quot;Left &gt; &quot; + super().who()
+class Right(Base):
+    def who(self): return &quot;Right &gt; &quot; + super().who()
+class Child(Left, Right):
+    def who(self): return &quot;Child &gt; &quot; + super().who()
+
+print(Child().who())
+print([c.__name__ for c in Child.__mro__])
+</code></pre>
+<pre><code class="language-output">Child &gt; Left &gt; Right &gt; Base
+['Child', 'Left', 'Right', 'Base', 'object']
+</code></pre>
+<p><code>super()</code> does not mean "the parent"; it means "the next class in the MRO of the <em>instance's</em> type". That is what makes cooperative multiple inheritance work (the diamond problem is resolved; Base runs once).</p>
+<h3 id="44-cooperative-__init__-with-kwargs">4.4 Cooperative <code>__init__</code> with <code>**kwargs</code></h3>
+<pre><code class="language-python">class Named:
+    def __init__(self, *, name, **kw):
+        super().__init__(**kw)
+        self.name = name
+class Aged:
+    def __init__(self, *, age, **kw):
+        super().__init__(**kw)
+        self.age = age
+class Person(Named, Aged):
+    pass
+p = Person(name=&quot;Ravi&quot;, age=30)
+print(p.name, p.age)
+</code></pre>
+<pre><code class="language-output">Ravi 30
+</code></pre>
+<h3 id="45-mixins">4.5 Mixins</h3>
+<p>A mixin is a small class that adds one behavior and is not meant to stand alone.</p>
+<pre><code class="language-python">import json
+class JsonMixin:
+    def to_json(self):
+        return json.dumps(self.__dict__)
+class ReprMixin:
+    def __repr__(self):
+        args = &quot;, &quot;.join(f&quot;{k}={v!r}&quot; for k, v in vars(self).items())
+        return f&quot;{type(self).__name__}({args})&quot;
+
+class User(ReprMixin, JsonMixin):
+    def __init__(self, name, age):
+        self.name, self.age = name, age
+u = User(&quot;Mina&quot;, 28)
+print(u, u.to_json())
+</code></pre>
+<pre><code class="language-output">User(name='Mina', age=28) {&quot;name&quot;: &quot;Mina&quot;, &quot;age&quot;: 28}
+</code></pre>
+<h3 id="46-composition-over-inheritance">4.6 Composition over inheritance</h3>
+<p>"Is-a" means inherit; "has-a" means compose. Inheritance couples subclasses to parent internals; composition is flexible.</p>
+<pre><code class="language-python">class Engine:
+    def start(self): return &quot;engine on&quot;
+class Car:
+    def __init__(self, engine):
+        self.engine = engine          # has-a
+    def start(self):
+        return self.engine.start()    # delegation
+print(Car(Engine()).start())
+</code></pre>
+<pre><code class="language-output">engine on
+</code></pre>
+<h3 id="47-overriding-extending-and-the-liskov-principle">4.7 Overriding, extending, and the Liskov principle</h3>
+<p>Override to change behavior, call <code>super()</code> to extend it. Subclasses must honour the parent's contract (Liskov Substitution): anywhere a parent is expected, a child must work without surprising callers. The classic violation is <code>Square(Rectangle)</code> with a setter that changes both sides.</p>
+<h3 id="48-inheriting-from-built-ins">4.8 Inheriting from built-ins</h3>
+<p>Subclass <code>list</code>, <code>dict</code>, <code>str</code> for small tweaks, but prefer <code>collections.UserList</code>, <code>UserDict</code>, <code>UserString</code> when overriding methods, because C-level built-ins may bypass your overrides internally.</p>
+<pre><code class="language-python">from collections import UserDict
+class LowerDict(UserDict):
+    def __setitem__(self, key, value):
+        super().__setitem__(key.lower(), value)
+d = LowerDict(); d[&quot;ABC&quot;] = 1
+print(d)
+</code></pre>
+<pre><code class="language-output">{'abc': 1}
+</code></pre>
+</section>
+<section class="chapter" id="5-polymorphism" data-title="5. Polymorphism"><h2 id="5-polymorphism">5. Polymorphism</h2>
+<p><em>Many forms, one interface.</em> Python gets polymorphism mostly through duck typing and method overriding.</p>
+<h3 id="51-duck-typing">5.1 Duck typing</h3>
+<p>"If it walks like a duck and quacks like a duck, it is a duck." What matters is that the object has the needed methods, not its class.</p>
+<pre><code class="language-python">class Duck:
+    def speak(self): return &quot;Quack&quot;
+class Robot:
+    def speak(self): return &quot;Beep&quot;
+for thing in (Duck(), Robot()):
+    print(thing.speak())
+</code></pre>
+<pre><code class="language-output">Quack
+Beep
+</code></pre>
+<h3 id="52-subtype-polymorphism">5.2 Subtype polymorphism</h3>
+<pre><code class="language-python">class Shape:
+    def area(self): raise NotImplementedError
+class Circle(Shape):
+    def __init__(self, r): self.r = r
+    def area(self): return 3.14159 * self.r ** 2
+class Rect(Shape):
+    def __init__(self, w, h): self.w, self.h = w, h
+    def area(self): return self.w * self.h
+print([round(s.area(), 2) for s in (Circle(1), Rect(2, 3))])
+</code></pre>
+<pre><code class="language-output">[3.14, 6]
+</code></pre>
+<h3 id="53-method-overloading">5.3 Method overloading</h3>
+<p>Python has no signature-based overloading; the last <code>def</code> wins. Alternatives: default arguments, <code>*args</code>, <code>functools.singledispatch</code>, <code>singledispatchmethod</code>, and <code>typing.overload</code> for static typing.</p>
+<pre><code class="language-python">from functools import singledispatch
+
+@singledispatch
+def describe(x):
+    return f&quot;object {x!r}&quot;
+@describe.register
+def _(x: int):
+    return f&quot;int {x}&quot;
+@describe.register
+def _(x: list):
+    return f&quot;list of {len(x)}&quot;
+
+print(describe(5), describe([1, 2]), describe(&quot;s&quot;))
+</code></pre>
+<pre><code class="language-output">int 5 list of 2 object 's'
+</code></pre>
+<h3 id="54-operator-overloading">5.4 Operator overloading</h3>
+<p>See chapter 7 for the full dunder catalogue. Operators are polymorphic because <code>a + b</code> calls <code>type(a).__add__(a, b)</code>.</p>
+</section>
+<section class="chapter" id="6-abstraction" data-title="6. Abstraction"><h2 id="6-abstraction">6. Abstraction</h2>
+<p>Abstraction hides complexity and exposes a clean contract.</p>
+<h3 id="61-abstract-base-classes">6.1 Abstract base classes</h3>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+
+class Payment(ABC):
+    @abstractmethod
+    def pay(self, amount): ...
+
+    @property
+    @abstractmethod
+    def provider(self): ...
+
+    def receipt(self, amount):            # concrete method shared by children
+        return f&quot;Paid {amount} via {self.provider}&quot;
+
+class Card(Payment):
+    provider = &quot;Card&quot;
+    def pay(self, amount): return f&quot;charged {amount}&quot;
+
+try:
+    Payment()
+except TypeError as e:
+    print(&quot;TypeError:&quot;, e)
+print(Card().receipt(50))
+</code></pre>
+<pre><code class="language-output">TypeError: Can't instantiate abstract class Payment without an implementation for abstract methods 'pay', 'provider'
+Paid 50 via Card
+</code></pre>
+<h3 id="62-virtual-subclasses-and-__subclasshook__">6.2 Virtual subclasses and <code>__subclasshook__</code></h3>
+<pre><code class="language-python">from abc import ABC
+class Closeable(ABC):
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Closeable:
+            return any(&quot;close&quot; in B.__dict__ for B in C.__mro__) or NotImplemented
+        return NotImplemented
+
+class File:
+    def close(self): pass
+print(issubclass(File, Closeable), isinstance(File(), Closeable))
+
+class Fake: pass
+Closeable.register(Fake)         # explicit virtual subclass
+print(issubclass(Fake, Closeable))
+</code></pre>
+<pre><code class="language-output">True True
+True
+</code></pre>
+<h3 id="63-protocols-structural-typing">6.3 Protocols (structural typing)</h3>
+<p><code>typing.Protocol</code> formalizes duck typing for type checkers (and for <code>isinstance</code> with <code>@runtime_checkable</code>).</p>
+<pre><code class="language-python">from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class SupportsArea(Protocol):
+    def area(self) -&gt; float: ...
+
+class Sq:
+    def area(self): return 4.0
+print(isinstance(Sq(), SupportsArea))
+</code></pre>
+<pre><code class="language-output">True
+</code></pre>
+<p>ABC = nominal ("you declared you are one"); Protocol = structural ("you look like one").</p>
+<h3 id="64-interfaces-in-python">6.4 Interfaces in Python</h3>
+<p>There is no <code>interface</code> keyword. Use ABCs with only abstract methods, or Protocols.</p>
+</section>
+<section class="chapter" id="7-magic-dunder-methods-the-data-model" data-title="7. Magic (dunder) methods: the data model"><h2 id="7-magic-dunder-methods-the-data-model">7. Magic (dunder) methods: the data model</h2>
+<p>Dunder methods let your objects plug into Python syntax and built-ins. You never call them directly; Python does.</p>
+<h3 id="71-representation">7.1 Representation</h3>
+<pre><code class="language-python">class Vec:
+    def __init__(self, x, y): self.x, self.y = x, y
+    def __repr__(self):  return f&quot;Vec({self.x!r}, {self.y!r})&quot;   # for developers, unambiguous
+    def __str__(self):   return f&quot;({self.x}, {self.y})&quot;          # for users
+    def __format__(self, spec): return f&quot;&lt;{self.x:{spec}}, {self.y:{spec}}&gt;&quot;
+    def __bytes__(self): return f&quot;{self.x},{self.y}&quot;.encode()
+
+v = Vec(1.5, 2)
+print(repr(v), str(v), f&quot;{v:.2f}&quot;, bytes(v))
+</code></pre>
+<pre><code class="language-output">Vec(1.5, 2) (1.5, 2) &lt;1.50, 2.00&gt; b'1.5,2'
+</code></pre>
+<h3 id="72-arithmetic-reflected-and-in-place-operators">7.2 Arithmetic, reflected and in-place operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Method</th>
+<th>Reflected</th>
+<th>In-place</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code> <code>-</code> <code>*</code></td>
+<td><code>__add__ __sub__ __mul__</code></td>
+<td><code>__radd__ ...</code></td>
+<td><code>__iadd__ ...</code></td>
+</tr>
+<tr>
+<td><code>/</code> <code>//</code> <code>%</code> <code>**</code></td>
+<td><code>__truediv__ __floordiv__ __mod__ __pow__</code></td>
+<td><code>__rtruediv__ ...</code></td>
+<td><code>__itruediv__ ...</code></td>
+</tr>
+<tr>
+<td><code>@</code></td>
+<td><code>__matmul__</code></td>
+<td><code>__rmatmul__</code></td>
+<td><code>__imatmul__</code></td>
+</tr>
+<tr>
+<td><code>&amp; \| ^ &lt;&lt; &gt;&gt;</code></td>
+<td><code>__and__ __or__ __xor__ __lshift__ __rshift__</code></td>
+<td><code>__rand__ ...</code></td>
+<td><code>__iand__ ...</code></td>
+</tr>
+<tr>
+<td>unary</td>
+<td><code>__neg__ __pos__ __abs__ __invert__</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Return <code>NotImplemented</code> (not raise) when you do not support the operand type, so Python can try the reflected method.</p>
+<pre><code class="language-python">import math
+class Vec:
+    def __init__(self, x, y): self.x, self.y = x, y
+    def __repr__(self): return f&quot;Vec({self.x}, {self.y})&quot;
+    def __add__(self, o):
+        if not isinstance(o, Vec): return NotImplemented
+        return Vec(self.x + o.x, self.y + o.y)
+    def __mul__(self, k):
+        if not isinstance(k, (int, float)): return NotImplemented
+        return Vec(self.x * k, self.y * k)
+    __rmul__ = __mul__                       # makes 3 * v work
+    def __neg__(self): return Vec(-self.x, -self.y)
+    def __abs__(self): return math.hypot(self.x, self.y)
+    def __iadd__(self, o):                   # in-place: mutate and return self
+        self.x += o.x; self.y += o.y
+        return self
+    def __bool__(self): return bool(abs(self))
+    def __eq__(self, o): return isinstance(o, Vec) and (self.x, self.y) == (o.x, o.y)
+    def __hash__(self): return hash((self.x, self.y))
+
+v = Vec(3, 4)
+print(v + Vec(1, 1), 2 * v, v * 2, -v, abs(v), bool(Vec(0, 0)))
+v += Vec(1, 1)
+print(v)
+</code></pre>
+<pre><code class="language-output">Vec(4, 5) Vec(6, 8) Vec(6, 8) Vec(-3, -4) 5.0 False
+Vec(4, 5)
+</code></pre>
+<h3 id="73-comparison">7.3 Comparison</h3>
+<p><code>__eq__ __ne__ __lt__ __le__ __gt__ __ge__</code>. Define <code>__eq__</code> and one ordering method, then let <code>functools.total_ordering</code> fill the rest. Defining <code>__eq__</code> without <code>__hash__</code> makes the class unhashable.</p>
+<pre><code class="language-python">from functools import total_ordering
+
+@total_ordering
+class Version:
+    def __init__(self, s): self.parts = tuple(map(int, s.split(&quot;.&quot;)))
+    def __eq__(self, o): return self.parts == o.parts
+    def __lt__(self, o): return self.parts &lt; o.parts
+    def __hash__(self): return hash(self.parts)
+    def __repr__(self): return &quot;v&quot; + &quot;.&quot;.join(map(str, self.parts))
+
+print(sorted([Version(&quot;1.10&quot;), Version(&quot;1.2&quot;), Version(&quot;1.9.1&quot;)]))
+print(Version(&quot;2.0&quot;) &gt;= Version(&quot;1.9&quot;))
+</code></pre>
+<pre><code class="language-output">[v1.2, v1.9.1, v1.10]
+True
+</code></pre>
+<h3 id="74-container-protocol">7.4 Container protocol</h3>
+<pre><code class="language-python">class Playlist:
+    def __init__(self, *songs): self._songs = list(songs)
+    def __len__(self): return len(self._songs)
+    def __getitem__(self, i): return self._songs[i]          # supports indexing, slicing, iteration
+    def __setitem__(self, i, v): self._songs[i] = v
+    def __delitem__(self, i): del self._songs[i]
+    def __contains__(self, s): return s in self._songs
+    def __iter__(self): return iter(self._songs)
+    def __reversed__(self): return reversed(self._songs)
+
+p = Playlist(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+print(len(p), p[1], p[0:2], &quot;b&quot; in p, list(reversed(p)))
+p[0] = &quot;z&quot;; del p[1]
+print(list(p))
+</code></pre>
+<pre><code class="language-output">3 b ['a', 'b'] True ['c', 'b', 'a']
+['z', 'c']
+</code></pre>
+<p><code>__missing__</code> on dict subclasses handles absent keys (used by <code>defaultdict</code>).</p>
+<pre><code class="language-python">class AutoDict(dict):
+    def __missing__(self, key):
+        self[key] = value = AutoDict()
+        return value
+t = AutoDict(); t[&quot;a&quot;][&quot;b&quot;][&quot;c&quot;] = 1
+print(t)
+</code></pre>
+<pre><code class="language-output">{'a': {'b': {'c': 1}}}
+</code></pre>
+<h3 id="75-callables-conversion-and-numeric-protocol">7.5 Callables, conversion and numeric protocol</h3>
+<pre><code class="language-python">class Multiplier:
+    def __init__(self, k): self.k = k
+    def __call__(self, x): return x * self.k      # instances behave like functions
+    def __int__(self): return self.k
+    def __float__(self): return float(self.k)
+    def __index__(self): return self.k            # usable as list index / in range()
+    def __round__(self, n=None): return round(self.k, n)
+
+m = Multiplier(3)
+print(m(5), int(m), float(m), [10, 20, 30, 40][Multiplier(2)])
+</code></pre>
+<pre><code class="language-output">15 3 3.0 30
+</code></pre>
+<h3 id="76-context-manager-iterator-and-async-dunders-preview">7.6 Context-manager, iterator and async dunders (preview)</h3>
+<p><code>__enter__ __exit__</code>, <code>__iter__ __next__</code>, <code>__aenter__ __aexit__ __aiter__ __anext__ __await__</code> appear in chapters 12 to 15.</p>
+<h3 id="77-class-level-hooks">7.7 Class-level hooks</h3>
+<p><code>__init_subclass__</code> (runs when a subclass is defined), <code>__set_name__</code> (descriptor learns its attribute name), <code>__class_getitem__</code> (enables <code>MyClass[int]</code>), <code>__instancecheck__</code> / <code>__subclasscheck__</code> (on metaclasses), <code>__prepare__</code> (metaclass namespace). These appear in chapters 9 and 10.</p>
+<h3 id="78-copy-and-pickle-hooks">7.8 Copy and pickle hooks</h3>
+<p><code>__copy__</code>, <code>__deepcopy__</code>, <code>__reduce__</code>, <code>__getstate__</code>, <code>__setstate__</code> customise <code>copy</code> and <code>pickle</code>.</p>
+<pre><code class="language-python">import pickle
+class Conn:
+    def __init__(self, url):
+        self.url = url
+        self.sock = object()               # not picklable in real life
+    def __getstate__(self):
+        d = self.__dict__.copy(); del d[&quot;sock&quot;]; return d
+    def __setstate__(self, d):
+        self.__dict__.update(d); self.sock = object()
+
+c = pickle.loads(pickle.dumps(Conn(&quot;db://x&quot;)))
+print(c.url, type(c.sock).__name__)
+</code></pre>
+<pre><code class="language-output">db://x object
+</code></pre>
+<h3 id="79-hashing-rules">7.9 Hashing rules</h3>
+<p>If you define <code>__eq__</code>, define <code>__hash__</code> consistently or set <code>__hash__ = None</code> for mutable types. Use immutable fields to compute the hash.</p>
+<h3 id="710-other-useful-dunders">7.10 Other useful dunders</h3>
+<p><code>__dir__</code> (customise <code>dir()</code>), <code>__sizeof__</code>, <code>__fspath__</code> (path-like objects), <code>__length_hint__</code>, <code>__format__</code>, <code>__matmul__</code>, <code>__getnewargs__</code>, <code>__trunc__</code>, <code>__ceil__</code>, <code>__floor__</code>, <code>__divmod__</code>, <code>__reversed__</code>, <code>__aiter__</code>, <code>__match_args__</code>.</p>
+</section>
+<section class="chapter" id="8-dataclasses-enums-and-typed-containers" data-title="8. Dataclasses, enums and typed containers"><h2 id="8-dataclasses-enums-and-typed-containers">8. Dataclasses, enums and typed containers</h2>
+<h3 id="81-dataclass">8.1 <code>@dataclass</code></h3>
+<p>Generates <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code> (and optionally ordering, hashing, slots) from annotated fields.</p>
+<pre><code class="language-python">from dataclasses import dataclass, field, asdict, astuple, replace, fields, InitVar
+
+@dataclass(order=True, frozen=True, slots=True)
+class Item:
+    name: str
+    price: float
+    tags: tuple = ()
+
+a, b = Item(&quot;pen&quot;, 1.5), Item(&quot;book&quot;, 9.0)
+print(a, a &lt; b, asdict(a))
+print(replace(a, price=2.0))
+try:
+    a.price = 3
+except Exception as e:
+    print(type(e).__name__)
+</code></pre>
+<pre><code class="language-output">Item(name='pen', price=1.5, tags=()) False {'name': 'pen', 'price': 1.5, 'tags': ()}
+Item(name='pen', price=2.0, tags=())
+FrozenInstanceError
+</code></pre>
+<h3 id="82-field-options">8.2 Field options</h3>
+<pre><code class="language-python">from dataclasses import dataclass, field, InitVar
+
+@dataclass
+class Order:
+    id: int
+    items: list = field(default_factory=list)      # never use a bare mutable default
+    total: float = field(init=False, default=0.0)
+    secret: str = field(default=&quot;&quot;, repr=False, compare=False)
+    discount: InitVar[float] = 0.0                 # init-only parameter
+
+    def __post_init__(self, discount):
+        self.total = 100 * (1 - discount)
+
+o = Order(1, discount=0.1)
+print(o, o.total)
+</code></pre>
+<pre><code class="language-output">Order(id=1, items=[], total=90.0) 90.0
+</code></pre>
+<p>Other options: <code>kw_only=True</code>, <code>field(kw_only=True)</code>, <code>unsafe_hash=True</code>, <code>match_args</code>, inheritance between dataclasses (fields are merged in MRO order, so defaulted fields in a parent force defaults in the child unless <code>kw_only</code>).</p>
+<h3 id="83-namedtuple-and-namedtuple">8.3 <code>namedtuple</code> and <code>NamedTuple</code></h3>
+<pre><code class="language-python">from collections import namedtuple
+from typing import NamedTuple
+
+P = namedtuple(&quot;P&quot;, &quot;x y&quot;)
+class Q(NamedTuple):
+    x: int
+    y: int = 0
+
+print(P(1, 2), Q(5), Q(1, 2)._replace(y=9), Q(1, 2)._asdict())
+x, y = Q(3, 4)       # tuple unpacking still works
+</code></pre>
+<pre><code class="language-output">P(x=1, y=2) Q(x=5, y=0) Q(x=1, y=9) {'x': 1, 'y': 2}
+</code></pre>
+<h3 id="84-enums">8.4 Enums</h3>
+<pre><code class="language-python">from enum import Enum, IntEnum, Flag, auto, StrEnum, unique
+
+class Color(Enum):
+    RED = auto()
+    GREEN = auto()
+
+class Status(StrEnum):
+    OK = &quot;ok&quot;
+    FAIL = &quot;fail&quot;
+
+class Perm(Flag):
+    R = auto(); W = auto(); X = auto()
+
+print(Color.RED, Color.RED.value, Color[&quot;GREEN&quot;], Status.OK == &quot;ok&quot;)
+print(Perm.R | Perm.W, Perm.R in (Perm.R | Perm.W))
+for c in Color: print(c.name, end=&quot; &quot;)
+</code></pre>
+<pre><code class="language-output">Color.RED 1 Color.GREEN True
+Perm.R|W True
+RED GREEN
+</code></pre>
+<p>Enums can have methods, properties and attributes, and members are singletons compared with <code>is</code>.</p>
+<h3 id="85-typeddict-and-friends">8.5 TypedDict and friends</h3>
+<p><code>typing.TypedDict</code> describes dict shapes for type checkers (no runtime enforcement). Third-party <code>attrs</code> and <code>pydantic</code> offer richer validation; <code>pydantic</code> validates at runtime and is common in APIs.</p>
+<pre><code class="language-python">from typing import TypedDict, NotRequired
+class Movie(TypedDict):
+    title: str
+    year: NotRequired[int]
+m: Movie = {&quot;title&quot;: &quot;Dune&quot;}
+print(m)
+</code></pre>
+<pre><code class="language-output">{'title': 'Dune'}
+</code></pre>
+<h3 id="86-when-to-choose-what">8.6 When to choose what</h3>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Choose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simple data holder with behavior</td>
+<td><code>@dataclass</code></td>
+</tr>
+<tr>
+<td>Immutable record, tuple-like</td>
+<td><code>NamedTuple</code> or frozen dataclass</td>
+</tr>
+<tr>
+<td>Fixed set of constants</td>
+<td><code>Enum</code></td>
+</tr>
+<tr>
+<td>JSON-like dict shapes</td>
+<td><code>TypedDict</code></td>
+</tr>
+<tr>
+<td>Runtime validation of external input</td>
+<td>pydantic / attrs</td>
+</tr>
+<tr>
+<td>Heavy custom logic</td>
+<td>normal class</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="chapter" id="9-descriptors-and-class-hooks" data-title="9. Descriptors and class hooks"><h2 id="9-descriptors-and-class-hooks">9. Descriptors and class hooks</h2>
+<p>Descriptors are the mechanism behind <code>property</code>, methods, <code>classmethod</code>, <code>staticmethod</code>, <code>__slots__</code> and much of the ORM world (Django fields, SQLAlchemy columns).</p>
+<h3 id="91-the-descriptor-protocol">9.1 The descriptor protocol</h3>
+<p>An object that defines <code>__get__</code>, <code>__set__</code> or <code>__delete__</code> and lives as a <strong>class attribute</strong> is a descriptor. With <code>__set__</code> or <code>__delete__</code> it is a <strong>data descriptor</strong> (wins over the instance <code>__dict__</code>); with only <code>__get__</code> it is a <strong>non-data descriptor</strong> (instance <code>__dict__</code> wins).</p>
+<pre><code class="language-python">class Positive:
+    def __set_name__(self, owner, name):      # called at class creation
+        self.private = &quot;_&quot; + name
+    def __get__(self, obj, objtype=None):
+        if obj is None:                        # accessed on the class
+            return self
+        return getattr(obj, self.private)
+    def __set__(self, obj, value):
+        if value &lt;= 0:
+            raise ValueError(f&quot;{self.private[1:]} must be positive&quot;)
+        setattr(obj, self.private, value)
+
+class Product:
+    price = Positive()
+    qty = Positive()
+    def __init__(self, price, qty):
+        self.price, self.qty = price, qty
+
+p = Product(9.5, 2)
+print(p.price, p.qty)
+try:
+    p.qty = -1
+except ValueError as e:
+    print(e)
+</code></pre>
+<pre><code class="language-output">9.5 2
+qty must be positive
+</code></pre>
+<h3 id="92-how-functions-become-bound-methods">9.2 How functions become bound methods</h3>
+<p>Functions are non-data descriptors. <code>obj.method</code> calls <code>function.__get__(obj, type)</code>, which returns a bound method.</p>
+<pre><code class="language-python">class K:
+    def f(self): return &quot;f&quot;
+k = K()
+print(type(K.__dict__[&quot;f&quot;]).__name__)
+print(K.__dict__[&quot;f&quot;].__get__(k, K)())
+</code></pre>
+<pre><code class="language-output">function
+f
+</code></pre>
+<h3 id="93-a-property-built-from-scratch-and-cached_property">9.3 A property built from scratch, and <code>cached_property</code></h3>
+<pre><code class="language-python">class myproperty:
+    def __init__(self, fget): self.fget = fget
+    def __get__(self, obj, objtype=None):
+        return self if obj is None else self.fget(obj)
+
+from functools import cached_property
+class Data:
+    def __init__(self): self.calls = 0
+    @myproperty
+    def double(self): return 2
+    @cached_property           # computed once, stored in instance __dict__
+    def heavy(self):
+        self.calls += 1
+        return sum(range(1000))
+d = Data()
+print(d.double, d.heavy, d.heavy, d.calls)
+</code></pre>
+<pre><code class="language-output">2 499500 499500 1
+</code></pre>
+<h3 id="94-lookup-order-recap">9.4 Lookup order recap</h3>
+<p>For <code>obj.attr</code>: (1) data descriptor found on type(obj) MRO, (2) <code>obj.__dict__</code>, (3) non-data descriptor or plain class attribute, (4) <code>__getattr__</code>. <code>__getattribute__</code> implements steps 1 to 3.</p>
+<h3 id="95-__init_subclass__-and-__set_name__">9.5 <code>__init_subclass__</code> and <code>__set_name__</code></h3>
+<pre><code class="language-python">class Plugin:
+    registry = {}
+    def __init_subclass__(cls, /, key=None, **kw):
+        super().__init_subclass__(**kw)
+        Plugin.registry[key or cls.__name__.lower()] = cls
+
+class Csv(Plugin, key=&quot;csv&quot;): pass
+class Json(Plugin): pass
+print(Plugin.registry)
+</code></pre>
+<pre><code class="language-output">{'csv': &lt;class '__main__.Csv'&gt;, 'json': &lt;class '__main__.Json'&gt;}
+</code></pre>
+<h3 id="96-__class_getitem__">9.6 <code>__class_getitem__</code></h3>
+<pre><code class="language-python">class Box:
+    def __class_getitem__(cls, item):
+        return f&quot;{cls.__name__}[{getattr(item, '__name__', item)}]&quot;
+print(Box[int])
+</code></pre>
+<pre><code class="language-output">Box[int]
+</code></pre>
+</section>
+<section class="chapter" id="10-metaclasses-and-class-creation" data-title="10. Metaclasses and class creation"><h2 id="10-metaclasses-and-class-creation">10. Metaclasses and class creation</h2>
+<p>Classes are objects, and a class is an instance of its <strong>metaclass</strong> (default <code>type</code>). <code>class X: ...</code> is roughly <code>X = type("X", bases, namespace)</code>.</p>
+<h3 id="101-what-class-really-does">10.1 What <code>class</code> really does</h3>
+<ol>
+<li>Resolve the metaclass. 2. Call <code>metaclass.__prepare__(name, bases)</code> to get the namespace. 3. Execute the class body in that namespace. 4. Call <code>metaclass(name, bases, namespace)</code>, which runs <code>__new__</code> then <code>__init__</code>. 5. Run <code>__set_name__</code> on descriptors and <code>__init_subclass__</code> on the parent.</li>
+</ol>
+<pre><code class="language-python">class Meta(type):
+    @classmethod
+    def __prepare__(mcs, name, bases):
+        print(&quot;prepare&quot;, name)
+        return {}
+    def __new__(mcs, name, bases, ns):
+        print(&quot;new&quot;, name)
+        return super().__new__(mcs, name, bases, ns)
+    def __init__(cls, name, bases, ns):
+        print(&quot;init&quot;, name)
+        super().__init__(name, bases, ns)
+    def __call__(cls, *a, **kw):              # runs when you INSTANTIATE the class
+        print(&quot;call&quot;, cls.__name__)
+        return super().__call__(*a, **kw)
+
+class Thing(metaclass=Meta):
+    pass
+Thing()
+</code></pre>
+<pre><code class="language-output">prepare Thing
+new Thing
+init Thing
+call Thing
+</code></pre>
+<h3 id="102-practical-metaclass-uses">10.2 Practical metaclass uses</h3>
+<p>Enforcing rules, auto-registration, adding methods, singletons, ORMs.</p>
+<pre><code class="language-python">class Singleton(type):
+    _instances = {}
+    def __call__(cls, *a, **kw):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*a, **kw)
+        return cls._instances[cls]
+
+class Config(metaclass=Singleton):
+    def __init__(self): self.debug = True
+print(Config() is Config())
+
+class RequireDoc(type):
+    def __new__(mcs, name, bases, ns):
+        for k, v in ns.items():
+            if callable(v) and not k.startswith(&quot;_&quot;) and not v.__doc__:
+                raise TypeError(f&quot;{name}.{k} needs a docstring&quot;)
+        return super().__new__(mcs, name, bases, ns)
+
+try:
+    class Bad(metaclass=RequireDoc):
+        def run(self): pass
+except TypeError as e:
+    print(e)
+</code></pre>
+<pre><code class="language-output">True
+Bad.run needs a docstring
+</code></pre>
+<h3 id="103-metaclass-conflicts-and-alternatives">10.3 Metaclass conflicts and alternatives</h3>
+<p>A class with several bases needs a metaclass that is a subclass of all bases' metaclasses. Prefer lighter tools first: <strong>class decorators</strong> and <strong><code>__init_subclass__</code></strong> solve most cases; use a metaclass only when you must control class creation or instance creation itself.</p>
+<pre><code class="language-python">def add_repr(cls):                       # class decorator
+    cls.__repr__ = lambda self: f&quot;{cls.__name__}({vars(self)})&quot;
+    return cls
+
+@add_repr
+class P:
+    def __init__(self): self.x = 1
+print(P())
+</code></pre>
+<pre><code class="language-output">P({'x': 1})
+</code></pre>
+<h3 id="104-dynamic-classes-and-types">10.4 Dynamic classes and <code>types</code></h3>
+<p><code>type(name, bases, ns)</code>, <code>types.new_class</code>, and <code>types.SimpleNamespace</code> build classes and objects dynamically. <code>ABCMeta</code> is itself a metaclass.</p>
+<pre><code class="language-python">import types
+ns = types.SimpleNamespace(a=1, b=2)
+print(ns, type(type), type(ABC := __import__(&quot;abc&quot;).ABC))
+</code></pre>
+<pre><code class="language-output">namespace(a=1, b=2) &lt;class 'type'&gt; &lt;class 'abc.ABCMeta'&gt;
+</code></pre>
+</section>
+<section class="chapter" id="11-functions-closures-and-decorators" data-title="11. Functions, closures and decorators"><h2 id="11-functions-closures-and-decorators">11. Functions, closures and decorators</h2>
+<h3 id="111-first-class-functions">11.1 First-class functions</h3>
+<p>Functions are objects: assign them, pass them, return them, attach attributes. <code>lambda</code> is an anonymous single-expression function.</p>
+<pre><code class="language-python">def shout(s): return s.upper()
+ops = {&quot;shout&quot;: shout, &quot;rev&quot;: lambda s: s[::-1]}
+print([f(&quot;abc&quot;) for f in ops.values()])
+print(list(map(len, [&quot;a&quot;, &quot;bb&quot;])), list(filter(None, [0, 1, 2])))
+print(sorted([&quot;bb&quot;, &quot;a&quot;, &quot;ccc&quot;], key=len, reverse=True))
+shout.calls = 0                       # functions can hold attributes
+</code></pre>
+<pre><code class="language-output">['ABC', 'cba']
+[1, 2] [1, 2]
+['ccc', 'bb', 'a']
+</code></pre>
+<h3 id="112-closures">11.2 Closures</h3>
+<p>A closure is a function that remembers variables from its enclosing scope.</p>
+<pre><code class="language-python">def make_counter():
+    n = 0
+    def inc():
+        nonlocal n
+        n += 1
+        return n
+    return inc
+c = make_counter()
+print(c(), c(), c.__closure__[0].cell_contents)
+
+fs = [lambda i=i: i for i in range(3)]      # late-binding fix with default arg
+print([f() for f in fs])
+</code></pre>
+<pre><code class="language-output">1 2 2
+[0, 1, 2]
+</code></pre>
+<h3 id="113-decorators">11.3 Decorators</h3>
+<p>A decorator takes a callable and returns a callable. <code>@d</code> above <code>def f</code> means <code>f = d(f)</code>.</p>
+<pre><code class="language-python">import functools, time
+
+def timer(func):
+    @functools.wraps(func)              # keeps __name__, __doc__, signature info
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        wrapper.last = time.perf_counter() - start
+        return result
+    return wrapper
+
+@timer
+def work(n):
+    &quot;&quot;&quot;sum numbers&quot;&quot;&quot;
+    return sum(range(n))
+print(work(1000), work.__name__, work.__doc__)
+</code></pre>
+<pre><code class="language-output">499500 work sum numbers
+</code></pre>
+<h3 id="114-decorators-with-arguments">11.4 Decorators with arguments</h3>
+<pre><code class="language-python">import functools
+def retry(times=3, exceptions=(Exception,)):
+    def deco(func):
+        @functools.wraps(func)
+        def wrapper(*a, **kw):
+            for attempt in range(1, times + 1):
+                try:
+                    return func(*a, **kw)
+                except exceptions as e:
+                    print(f&quot;attempt {attempt} failed: {e}&quot;)
+            raise RuntimeError(&quot;all retries failed&quot;)
+        return wrapper
+    return deco
+
+state = {&quot;n&quot;: 0}
+@retry(times=3, exceptions=(ValueError,))
+def flaky():
+    state[&quot;n&quot;] += 1
+    if state[&quot;n&quot;] &lt; 3: raise ValueError(&quot;boom&quot;)
+    return &quot;ok&quot;
+print(flaky())
+</code></pre>
+<pre><code class="language-output">attempt 1 failed: boom
+attempt 2 failed: boom
+ok
+</code></pre>
+<h3 id="115-class-based-decorators-stacking-and-decorating-methods">11.5 Class-based decorators, stacking and decorating methods</h3>
+<pre><code class="language-python">import functools
+class CountCalls:
+    def __init__(self, func):
+        functools.update_wrapper(self, func)
+        self.func, self.count = func, 0
+    def __call__(self, *a, **kw):
+        self.count += 1
+        return self.func(*a, **kw)
+
+def bold(f):
+    return lambda *a, **k: f&quot;&lt;b&gt;{f(*a, **k)}&lt;/b&gt;&quot;
+def italic(f):
+    return lambda *a, **k: f&quot;&lt;i&gt;{f(*a, **k)}&lt;/i&gt;&quot;
+
+@bold
+@italic                                   # applied bottom-up: italic first
+def hi(): return &quot;hi&quot;
+print(hi())
+
+@CountCalls
+def f(): pass
+f(); f()
+print(f.count)
+</code></pre>
+<pre><code class="language-output">&lt;b&gt;&lt;i&gt;hi&lt;/i&gt;&lt;/b&gt;
+2
+</code></pre>
+<p>Order matters when stacking. Decorators on methods receive the plain function as the first argument, so <code>wrapper(self, *args, **kwargs)</code> works naturally; combine with <code>@property</code>, <code>@classmethod</code> by putting those <strong>outermost</strong>.</p>
+<h3 id="116-functools-toolbox">11.6 <code>functools</code> toolbox</h3>
+<pre><code class="language-python">from functools import lru_cache, cache, partial, reduce, wraps, singledispatch, cmp_to_key
+import operator
+
+@lru_cache(maxsize=None)
+def fib(n): return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
+print(fib(80), fib.cache_info().hits &gt; 0)
+
+power = partial(pow, exp=2) if False else partial(lambda b, e: b ** e, e=2)
+print(power(7), reduce(operator.mul, range(1, 6)))
+print(sorted([3, 1, 2], key=cmp_to_key(lambda a, b: b - a)))
+</code></pre>
+<pre><code class="language-output">23416728348467685 True
+49 120
+[3, 2, 1]
+</code></pre>
+<p>Also <code>partialmethod</code>, <code>total_ordering</code>, <code>cached_property</code>, <code>singledispatchmethod</code>.</p>
+<h3 id="117-higher-order-functions-and-operator-helpers">11.7 Higher-order functions and operator helpers</h3>
+<p><code>map, filter, zip, enumerate, sorted, min, max, any, all</code> plus <code>operator.itemgetter / attrgetter / methodcaller</code>.</p>
+<pre><code class="language-python">from operator import itemgetter, attrgetter
+rows = [(&quot;b&quot;, 2), (&quot;a&quot;, 3), (&quot;c&quot;, 1)]
+print(sorted(rows, key=itemgetter(1)))
+</code></pre>
+<pre><code class="language-output">[('c', 1), ('b', 2), ('a', 3)]
+</code></pre>
+<h3 id="118-inspecting-signatures-argument-handling">11.8 Inspecting signatures, argument handling</h3>
+<pre><code class="language-python">import inspect
+def g(a, b=2, *args, c, **kw): ...
+print(inspect.signature(g))
+print(list(inspect.signature(g).parameters))
+</code></pre>
+<pre><code class="language-output">(a, b=2, *args, c, **kw)
+['a', 'b', 'args', 'c', 'kw']
+</code></pre>
+</section>
+<section class="chapter" id="12-iterators-generators-and-itertools" data-title="12. Iterators, generators and itertools"><h2 id="12-iterators-generators-and-itertools">12. Iterators, generators and itertools</h2>
+<h3 id="121-the-iterator-protocol">12.1 The iterator protocol</h3>
+<p>An <strong>iterable</strong> has <code>__iter__</code> returning an iterator. An <strong>iterator</strong> has <code>__next__</code> and <code>__iter__</code> (returning itself) and raises <code>StopIteration</code> when done. A <code>for</code> loop calls <code>iter()</code> then <code>next()</code> repeatedly.</p>
+<pre><code class="language-python">class Countdown:
+    def __init__(self, n): self.n = n
+    def __iter__(self): return self
+    def __next__(self):
+        if self.n &lt;= 0: raise StopIteration
+        self.n -= 1
+        return self.n + 1
+print(list(Countdown(3)))
+
+it = iter([1, 2])
+print(next(it), next(it), next(it, &quot;done&quot;))
+</code></pre>
+<pre><code class="language-output">[3, 2, 1]
+1 2 done
+</code></pre>
+<h3 id="122-generators">12.2 Generators</h3>
+<p>A function with <code>yield</code> returns a generator: a lazy iterator that keeps its state between yields. Memory use stays constant.</p>
+<pre><code class="language-python">def fib():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+from itertools import islice
+print(list(islice(fib(), 10)))
+
+squares = (x * x for x in range(5))     # generator expression
+print(sum(squares))
+</code></pre>
+<pre><code class="language-output">[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+30
+</code></pre>
+<h3 id="123-two-way-generators-send-throw-close">12.3 Two-way generators: <code>send</code>, <code>throw</code>, <code>close</code></h3>
+<pre><code class="language-python">def averager():
+    total, n, avg = 0, 0, None
+    while True:
+        x = yield avg
+        total += x; n += 1
+        avg = total / n
+
+g = averager(); next(g)
+print(g.send(10), g.send(20), g.send(60))
+g.close()
+</code></pre>
+<pre><code class="language-output">10.0 15.0 30.0
+</code></pre>
+<h3 id="124-yield-from-delegation">12.4 <code>yield from</code> (delegation)</h3>
+<pre><code class="language-python">def chain(*its):
+    for it in its:
+        yield from it
+
+def flatten(x):
+    for i in x:
+        if isinstance(i, list): yield from flatten(i)
+        else: yield i
+
+print(list(chain(&quot;ab&quot;, [1, 2])), list(flatten([1, [2, [3, 4]], 5])))
+</code></pre>
+<pre><code class="language-output">['a', 'b', 1, 2] [1, 2, 3, 4, 5]
+</code></pre>
+<h3 id="125-iterable-classes-with-generators">12.5 Iterable classes with generators</h3>
+<pre><code class="language-python">class Tree:
+    def __init__(self, v, kids=()): self.v, self.kids = v, kids
+    def __iter__(self):
+        yield self.v
+        for k in self.kids:
+            yield from k
+print(list(Tree(1, [Tree(2, [Tree(3)]), Tree(4)])))
+</code></pre>
+<pre><code class="language-output">[1, 2, 3, 4]
+</code></pre>
+<h3 id="126-itertools">12.6 <code>itertools</code></h3>
+<pre><code class="language-python">import itertools as it
+print(list(it.chain([1], [2, 3])))
+print(list(it.islice(it.count(10, 5), 3)))
+print(list(it.product(&quot;ab&quot;, repeat=2)))
+print(list(it.permutations(&quot;abc&quot;, 2)))
+print(list(it.combinations(&quot;abcd&quot;, 2)))
+print([(k, list(g)) for k, g in it.groupby(&quot;aabbbc&quot;)])
+print(list(it.accumulate([1, 2, 3, 4])))
+print(list(it.zip_longest(&quot;ab&quot;, [1], fillvalue=&quot;-&quot;)))
+print(list(it.starmap(pow, [(2, 3), (3, 2)])))
+print(list(it.takewhile(lambda x: x &lt; 3, range(10))))
+print(list(it.pairwise([1, 2, 4, 7])))
+print(list(it.batched(range(5), 2)))
+</code></pre>
+<pre><code class="language-output">[1, 2, 3]
+[10, 15, 20]
+[('a', 'a'), ('a', 'b'), ('b', 'a'), ('b', 'b')]
+[('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'c'), ('c', 'a'), ('c', 'b')]
+[('a', 'b'), ('a', 'c'), ('a', 'd'), ('b', 'c'), ('b', 'd'), ('c', 'd')]
+[('a', ['a', 'a']), ('b', ['b', 'b', 'b']), ('c', ['c'])]
+[1, 3, 6, 10]
+[('a', 1), ('b', '-')]
+[8, 9]
+[0, 1, 2]
+[(1, 2), (2, 4), (4, 7)]
+[(0, 1), (2, 3), (4,)]
+</code></pre>
+<p>Also <code>cycle, repeat, tee, dropwhile, filterfalse, compress, chain.from_iterable</code>.</p>
+<h3 id="127-comprehensions">12.7 Comprehensions</h3>
+<pre><code class="language-python">nums = range(6)
+print([n * n for n in nums if n % 2 == 0])           # list
+print({n: n ** 2 for n in nums})                      # dict
+print({n % 3 for n in nums})                          # set
+print([(x, y) for x in range(2) for y in &quot;ab&quot;])       # nested
+</code></pre>
+<pre><code class="language-output">[0, 4, 16]
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+{0, 1, 2}
+[(0, 'a'), (0, 'b'), (1, 'a'), (1, 'b')]
+</code></pre>
+</section>
+<section class="chapter" id="13-context-managers" data-title="13. Context managers"><h2 id="13-context-managers">13. Context managers</h2>
+<h3 id="131-the-with-statement">13.1 The <code>with</code> statement</h3>
+<p><code>with</code> guarantees setup and cleanup even on exceptions. The protocol is <code>__enter__</code> and <code>__exit__(exc_type, exc, tb)</code>; return a truthy value from <code>__exit__</code> to swallow the exception.</p>
+<pre><code class="language-python">class Timer:
+    def __enter__(self):
+        import time; self.t = time.perf_counter(); return self
+    def __exit__(self, et, ev, tb):
+        import time; self.elapsed = time.perf_counter() - self.t
+        return False                  # do not suppress exceptions
+
+with Timer() as t:
+    sum(range(1000))
+print(t.elapsed &gt;= 0)
+
+class Ignore:
+    def __enter__(self): return self
+    def __exit__(self, et, ev, tb): return et is ZeroDivisionError
+with Ignore():
+    1 / 0
+print(&quot;survived&quot;)
+</code></pre>
+<pre><code class="language-output">True
+survived
+</code></pre>
+<h3 id="132-contextlib">13.2 <code>contextlib</code></h3>
+<pre><code class="language-python">from contextlib import contextmanager, suppress, closing, ExitStack, nullcontext, redirect_stdout
+import io
+
+@contextmanager
+def tag(name):
+    print(f&quot;&lt;{name}&gt;&quot;, end=&quot;&quot;)
+    try:
+        yield name
+    finally:
+        print(f&quot;&lt;/{name}&gt;&quot;)
+
+with tag(&quot;b&quot;):
+    print(&quot;bold&quot;, end=&quot;&quot;)
+
+with suppress(FileNotFoundError):
+    open(&quot;/nonexistent&quot;)
+
+buf = io.StringIO()
+with redirect_stdout(buf):
+    print(&quot;captured&quot;)
+print(repr(buf.getvalue()))
+
+with ExitStack() as stack:                 # dynamic number of contexts
+    files = [stack.enter_context(nullcontext(i)) for i in range(3)]
+    print(files)
+</code></pre>
+<pre><code class="language-output">&lt;b&gt;bold&lt;/b&gt;
+'captured\n'
+[0, 1, 2]
+</code></pre>
+<p>Also <code>contextlib.asynccontextmanager</code>, <code>AsyncExitStack</code>, <code>chdir</code>, <code>ContextDecorator</code> (use a context manager as a decorator).</p>
+<h3 id="133-files-and-resources">13.3 Files and resources</h3>
+<p>Always open files with <code>with</code>; use <code>pathlib</code> for paths (chapter 22).</p>
+<pre><code class="language-python">import tempfile, pathlib
+with tempfile.TemporaryDirectory() as d:
+    p = pathlib.Path(d) / &quot;a.txt&quot;
+    with p.open(&quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.write(&quot;hello\nworld\n&quot;)
+    print(p.read_text().splitlines())
+</code></pre>
+<pre><code class="language-output">['hello', 'world']
+</code></pre>
+</section>
+<section class="chapter" id="14-exceptions-and-error-handling" data-title="14. Exceptions and error handling"><h2 id="14-exceptions-and-error-handling">14. Exceptions and error handling</h2>
+<h3 id="141-try-except-else-finally">14.1 try, except, else, finally</h3>
+<pre><code class="language-python">def parse(s):
+    try:
+        n = int(s)
+    except ValueError as e:
+        print(&quot;bad input:&quot;, e)
+        return None
+    except (TypeError, KeyError):
+        print(&quot;wrong type&quot;)
+        return None
+    else:                      # runs only if no exception
+        return n * 2
+    finally:                   # always runs
+        print(&quot;cleanup&quot;, s)
+
+print(parse(&quot;21&quot;), parse(&quot;x&quot;))
+</code></pre>
+<pre><code class="language-output">cleanup 21
+bad input: invalid literal for int() with base 10: 'x'
+cleanup x
+42 None
+</code></pre>
+<p>Catch specific exceptions, never a bare <code>except:</code> (it swallows <code>KeyboardInterrupt</code>). Keep the <code>try</code> body small.</p>
+<h3 id="142-hierarchy-and-custom-exceptions">14.2 Hierarchy and custom exceptions</h3>
+<p><code>BaseException</code> has <code>SystemExit</code>, <code>KeyboardInterrupt</code>, <code>GeneratorExit</code> and <code>Exception</code>; everything you normally catch derives from <code>Exception</code> (<code>ValueError, TypeError, KeyError, IndexError, OSError, RuntimeError, StopIteration, ...</code>).</p>
+<pre><code class="language-python">class AppError(Exception):
+    &quot;&quot;&quot;Base for this application.&quot;&quot;&quot;
+class ValidationError(AppError):
+    def __init__(self, field, msg):
+        super().__init__(f&quot;{field}: {msg}&quot;)
+        self.field = field
+
+try:
+    raise ValidationError(&quot;age&quot;, &quot;must be positive&quot;)
+except AppError as e:
+    print(type(e).__name__, e, e.field)
+</code></pre>
+<pre><code class="language-output">ValidationError age: must be positive age
+</code></pre>
+<h3 id="143-raising-chaining-notes">14.3 Raising, chaining, notes</h3>
+<pre><code class="language-python">try:
+    try:
+        {}[&quot;k&quot;]
+    except KeyError as e:
+        raise RuntimeError(&quot;lookup failed&quot;) from e     # explicit cause
+except RuntimeError as e:
+    print(repr(e.__cause__))
+
+try:
+    raise ValueError(&quot;x&quot;)
+except ValueError as e:
+    e.add_note(&quot;while processing row 7&quot;)               # 3.11+
+    print(e.__notes__)
+</code></pre>
+<pre><code class="language-output">KeyError('k')
+['while processing row 7']
+</code></pre>
+<p>Use bare <code>raise</code> inside <code>except</code> to re-raise with the original traceback. <code>raise ... from None</code> hides the context.</p>
+<h3 id="144-exception-groups-and-except-311">14.4 Exception groups and <code>except*</code> (3.11+)</h3>
+<pre><code class="language-python">def run():
+    raise ExceptionGroup(&quot;many&quot;, [ValueError(&quot;a&quot;), TypeError(&quot;b&quot;), ValueError(&quot;c&quot;)])
+try:
+    run()
+except* ValueError as eg:
+    print(&quot;values:&quot;, [str(e) for e in eg.exceptions])
+except* TypeError as eg:
+    print(&quot;types:&quot;, [str(e) for e in eg.exceptions])
+</code></pre>
+<pre><code class="language-output">values: ['a', 'c']
+types: ['b']
+</code></pre>
+<h3 id="145-eafp-vs-lbyl">14.5 EAFP vs LBYL</h3>
+<p>Python prefers "Easier to Ask Forgiveness than Permission": try the operation and handle failure, rather than pre-checking (look before you leap), which can race.</p>
+<h3 id="146-assertions-warnings-logging">14.6 Assertions, warnings, logging</h3>
+<p><code>assert cond, "msg"</code> is for programmer errors and is stripped with <code>-O</code>; never use it for input validation. <code>warnings.warn(..., DeprecationWarning)</code> signals API changes. Use <code>logging</code> (chapter 22) instead of <code>print</code> for diagnostics. <code>traceback</code> formats stack traces; <code>sys.excepthook</code> handles uncaught errors.</p>
+</section>
+<section class="chapter" id="15-concurrency-parallelism-and-asyncio" data-title="15. Concurrency, parallelism and asyncio"><h2 id="15-concurrency-parallelism-and-asyncio">15. Concurrency, parallelism and asyncio</h2>
+<h3 id="151-choosing-a-model">15.1 Choosing a model</h3>
+<table>
+<thead>
+<tr>
+<th>Workload</th>
+<th>Best tool</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I/O-bound, few tasks</td>
+<td><code>threading</code> / <code>ThreadPoolExecutor</code></td>
+<td>threads release the GIL while waiting</td>
+</tr>
+<tr>
+<td>I/O-bound, thousands of tasks</td>
+<td><code>asyncio</code></td>
+<td>cheap cooperative tasks</td>
+</tr>
+<tr>
+<td>CPU-bound</td>
+<td><code>multiprocessing</code> / <code>ProcessPoolExecutor</code></td>
+<td>separate interpreters, real parallelism</td>
+</tr>
+<tr>
+<td>Numeric arrays</td>
+<td>NumPy / native extensions</td>
+<td>release the GIL in C</td>
+</tr>
+</tbody>
+</table>
+<h3 id="152-the-gil">15.2 The GIL</h3>
+<p>The Global Interpreter Lock lets one thread execute Python bytecode at a time in standard CPython, protecting memory management. Threads still help I/O-bound work. Python 3.13 introduced an optional free-threaded build (PEP 703) that removes the GIL, and its support is still maturing; check library compatibility before relying on it.</p>
+<h3 id="153-threading">15.3 Threading</h3>
+<pre><code class="language-python">import threading, time
+counter = 0
+lock = threading.Lock()
+
+def work(n):
+    global counter
+    for _ in range(n):
+        with lock:                 # protect shared state
+            counter += 1
+
+threads = [threading.Thread(target=work, args=(10_000,)) for _ in range(4)]
+for t in threads: t.start()
+for t in threads: t.join()
+print(counter)
+</code></pre>
+<pre><code class="language-output">40000
+</code></pre>
+<p>Other primitives: <code>RLock, Semaphore, Event, Condition, Barrier, Timer</code>, <code>queue.Queue</code> (thread-safe producer/consumer), <code>threading.local()</code>, daemon threads.</p>
+<h3 id="154-concurrentfutures">15.4 <code>concurrent.futures</code></h3>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
+
+def square(x): return x * x
+
+with ThreadPoolExecutor(max_workers=4) as ex:
+    print(list(ex.map(square, range(5))))
+    futs = {ex.submit(square, i): i for i in range(3)}
+    print(sorted(f.result() for f in as_completed(futs)))
+
+if __name__ == &quot;__main__&quot;:                   # required guard for process pools
+    with ProcessPoolExecutor(2) as ex:
+        print(list(ex.map(square, range(5))))
+</code></pre>
+<pre><code class="language-output">[0, 1, 4, 9, 16]
+[0, 1, 4]
+[0, 1, 4, 9, 16]
+</code></pre>
+<h3 id="155-multiprocessing">15.5 Multiprocessing</h3>
+<p>Processes have separate memory. Share data via <code>Queue</code>, <code>Pipe</code>, <code>Value/Array</code>, <code>shared_memory</code>, or a <code>Manager</code>. Arguments and results must be picklable. Always protect the entry point with <code>if __name__ == "__main__":</code>.</p>
+<h3 id="156-asyncio-basics">15.6 asyncio basics</h3>
+<p><code>async def</code> defines a coroutine; <code>await</code> suspends it until the awaited thing is ready, letting the <strong>event loop</strong> run other tasks. Everything is single-threaded and cooperative, so one blocking call blocks all tasks.</p>
+<pre><code class="language-python">import asyncio
+
+async def fetch(name, delay):
+    await asyncio.sleep(delay)         # stands in for network I/O
+    return f&quot;{name} done&quot;
+
+async def main():
+    results = await asyncio.gather(fetch(&quot;a&quot;, 0.2), fetch(&quot;b&quot;, 0.1), fetch(&quot;c&quot;, 0.15))
+    print(results)
+
+asyncio.run(main())
+</code></pre>
+<pre><code class="language-output">['a done', 'b done', 'c done']
+</code></pre>
+<h3 id="157-tasks-taskgroup-timeouts-cancellation">15.7 Tasks, TaskGroup, timeouts, cancellation</h3>
+<pre><code class="language-python">import asyncio
+
+async def job(i):
+    await asyncio.sleep(0.05 * i)
+    return i * 10
+
+async def main():
+    async with asyncio.TaskGroup() as tg:                  # structured concurrency (3.11+)
+        tasks = [tg.create_task(job(i)) for i in range(1, 4)]
+    print([t.result() for t in tasks])
+
+    try:
+        async with asyncio.timeout(0.05):
+            await asyncio.sleep(1)
+    except TimeoutError:
+        print(&quot;timed out&quot;)
+
+    t = asyncio.create_task(asyncio.sleep(10))
+    t.cancel()
+    try:
+        await t
+    except asyncio.CancelledError:
+        print(&quot;cancelled&quot;)
+
+asyncio.run(main())
+</code></pre>
+<pre><code class="language-output">[10, 20, 30]
+timed out
+cancelled
+</code></pre>
+<h3 id="158-async-iterators-context-managers-queues-semaphores">15.8 Async iterators, context managers, queues, semaphores</h3>
+<pre><code class="language-python">import asyncio
+from contextlib import asynccontextmanager
+
+async def ticker(n):
+    for i in range(n):
+        await asyncio.sleep(0.01)
+        yield i                                  # async generator
+
+@asynccontextmanager
+async def resource():
+    print(&quot;open&quot;); yield &quot;res&quot;; print(&quot;close&quot;)
+
+async def worker(q, sem, out):
+    while True:
+        item = await q.get()
+        async with sem:                          # limit concurrency
+            out.append(item * 2)
+        q.task_done()
+
+async def main():
+    async for i in ticker(3):
+        print(&quot;tick&quot;, i)
+    async with resource() as r:
+        print(r)
+    q, sem, out = asyncio.Queue(), asyncio.Semaphore(2), []
+    ws = [asyncio.create_task(worker(q, sem, out)) for _ in range(3)]
+    for i in range(5): q.put_nowait(i)
+    await q.join()
+    for w in ws: w.cancel()
+    print(sorted(out))
+
+asyncio.run(main())
+</code></pre>
+<pre><code class="language-output">tick 0
+tick 1
+tick 2
+open
+res
+close
+[0, 2, 4, 6, 8]
+</code></pre>
+<p>Blocking code inside async programs: <code>await asyncio.to_thread(func, *args)</code> or <code>loop.run_in_executor</code>. Dunders: <code>__aiter__/__anext__</code>, <code>__aenter__/__aexit__</code>, <code>__await__</code>. Real network I/O uses libraries such as <code>aiohttp</code> or <code>httpx</code>.</p>
+<h3 id="159-common-pitfalls">15.9 Common pitfalls</h3>
+<p>Forgetting <code>await</code> (you get a coroutine object, not a result), running blocking calls in the loop, shared mutable state without locks in threads, creating tasks without keeping a reference (they can be garbage collected), and deadlocks from inconsistent lock ordering. Race conditions are logic bugs; the GIL does not prevent them for compound operations like <code>counter += 1</code>.</p>
+</section>
+<section class="chapter" id="16-modern-syntax-pattern-matching-and-friends" data-title="16. Modern syntax: pattern matching and friends"><h2 id="16-modern-syntax-pattern-matching-and-friends">16. Modern syntax: pattern matching and friends</h2>
+<h3 id="161-structural-pattern-matching-310">16.1 Structural pattern matching (3.10+)</h3>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: int
+    y: int
+
+def where(obj):
+    match obj:
+        case Point(x=0, y=0):
+            return &quot;origin&quot;
+        case Point(x, 0):
+            return f&quot;on x axis at {x}&quot;
+        case [first, *rest] if rest:
+            return f&quot;sequence starting {first} with {len(rest)} more&quot;
+        case {&quot;type&quot;: &quot;circle&quot;, &quot;r&quot;: r}:
+            return f&quot;circle radius {r}&quot;
+        case str() | bytes():
+            return &quot;text&quot;
+        case int(n) if n &lt; 0:
+            return &quot;negative int&quot;
+        case None:
+            return &quot;nothing&quot;
+        case _:
+            return &quot;something else&quot;
+
+for v in [Point(0, 0), Point(5, 0), [1, 2, 3], {&quot;type&quot;: &quot;circle&quot;, &quot;r&quot;: 2}, &quot;hi&quot;, -4, None, 3.5]:
+    print(where(v))
+</code></pre>
+<pre><code class="language-output">origin
+on x axis at 5
+sequence starting 1 with 2 more
+circle radius 2
+text
+negative int
+nothing
+something else
+</code></pre>
+<p>Patterns: literal, capture, wildcard <code>_</code>, value (dotted names), sequence, mapping, class (uses <code>__match_args__</code>), OR <code>|</code>, <code>as</code> binding, and guards (<code>if</code>).</p>
+<h3 id="162-other-modern-features-by-version">16.2 Other modern features by version</h3>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Notable features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.6 to 3.7</td>
+<td>f-strings, <code>dataclasses</code>, <code>async</code> keywords, ordered dicts</td>
+</tr>
+<tr>
+<td>3.8</td>
+<td>walrus <code>:=</code>, positional-only <code>/</code>, <code>f"{x=}"</code></td>
+</tr>
+<tr>
+<td>3.9</td>
+<td><code>dict</code> union <code>\|</code>, <code>list[int]</code> generics, <code>removeprefix</code></td>
+</tr>
+<tr>
+<td>3.10</td>
+<td><code>match</code>, <code>X \| Y</code> types, parenthesized context managers</td>
+</tr>
+<tr>
+<td>3.11</td>
+<td><code>ExceptionGroup</code>, <code>TaskGroup</code>, <code>tomllib</code>, big speedups</td>
+</tr>
+<tr>
+<td>3.12</td>
+<td><code>type</code> statement, PEP 695 generics, better f-strings</td>
+</tr>
+<tr>
+<td>3.13</td>
+<td>experimental free-threading and JIT, improved REPL</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-python">a, b = {&quot;x&quot;: 1}, {&quot;y&quot;: 2}
+print(a | b)
+x = 42
+print(f&quot;{x=} {x:&gt;6} {x:08.3f} {x:#x} {'hi':^10}|&quot;)
+print(&quot;hello world&quot;.removeprefix(&quot;hello &quot;))
+</code></pre>
+<pre><code class="language-output">{'x': 1, 'y': 2}
+x=42     42 0042.000 0x2a     hi    |
+world
+</code></pre>
+<h3 id="163-unpacking-and-star-expressions">16.3 Unpacking and star expressions</h3>
+<pre><code class="language-python">def f(*args, **kwargs): return args, kwargs
+print(f(*[1, 2], *&quot;ab&quot;, **{&quot;k&quot;: 1}, z=2))
+d = {**{&quot;a&quot;: 1}, &quot;b&quot;: 2}
+(a, b), c = (1, 2), 3
+</code></pre>
+<pre><code class="language-output">((1, 2, 'a', 'b'), {'k': 1, 'z': 2})
+</code></pre>
+</section>
+<section class="chapter" id="17-type-hints-and-generics" data-title="17. Type hints and generics"><h2 id="17-type-hints-and-generics">17. Type hints and generics</h2>
+<p>Type hints are optional annotations checked by tools such as <strong>mypy</strong>, <strong>pyright</strong> or <strong>pyre</strong>; Python does not enforce them at runtime (except libraries like pydantic or beartype).</p>
+<h3 id="171-the-basics">17.1 The basics</h3>
+<pre><code class="language-python">from typing import Optional, Union, Callable, Any, Iterable, Sequence, Mapping
+
+def greet(name: str, times: int = 1) -&gt; str:
+    return (f&quot;Hi {name} &quot; * times).strip()
+
+def first(xs: Sequence[int]) -&gt; int | None:       # 3.10+ union syntax
+    return xs[0] if xs else None
+
+handler: Callable[[int, str], bool]
+scores: dict[str, list[int]] = {}
+print(greet(&quot;Ana&quot;, 2), first([]), greet.__annotations__)
+</code></pre>
+<pre><code class="language-output">Hi Ana Hi Ana None {'name': &lt;class 'str'&gt;, 'times': &lt;class 'int'&gt;, 'return': &lt;class 'str'&gt;}
+</code></pre>
+<p>Handy forms: <code>list[int], tuple[int, ...], tuple[int, str], dict[str, int], set[str], Optional[X] (= X | None), Literal["a","b"], Final, ClassVar, Annotated, Any, Never, NoReturn, type[C]</code>.</p>
+<h3 id="172-generics">17.2 Generics</h3>
+<pre><code class="language-python">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;)
+
+class Stack(Generic[T]):
+    def __init__(self) -&gt; None:
+        self._items: list[T] = []
+    def push(self, x: T) -&gt; None: self._items.append(x)
+    def pop(self) -&gt; T: return self._items.pop()
+
+s = Stack[int](); s.push(1)
+print(s.pop())
+
+# Python 3.12+ syntax (PEP 695)
+class Box[U]:
+    def __init__(self, v: U): self.v = v
+def ident[V](x: V) -&gt; V: return x
+type Pair[A] = tuple[A, A]
+print(Box(5).v, ident(&quot;a&quot;))
+</code></pre>
+<pre><code class="language-output">1
+5 a
+</code></pre>
+<p>Variance: <code>TypeVar("T_co", covariant=True)</code> for read-only producers, <code>contravariant=True</code> for consumers. Bounded: <code>TypeVar("N", bound=Number)</code>; constrained: <code>TypeVar("S", str, bytes)</code>.</p>
+<h3 id="173-protocol-self-overload-typeguard-paramspec">17.3 Protocol, Self, overload, TypeGuard, ParamSpec</h3>
+<pre><code class="language-python">from typing import Protocol, Self, overload, TypeGuard, ParamSpec, Callable, TypeVar
+import functools
+
+class Builder:
+    def set(self, k: str) -&gt; Self:          # fluent API that works for subclasses
+        return self
+
+@overload
+def conv(x: int) -&gt; str: ...
+@overload
+def conv(x: str) -&gt; int: ...
+def conv(x):
+    return str(x) if isinstance(x, int) else int(x)
+
+def is_str_list(v: list[object]) -&gt; TypeGuard[list[str]]:
+    return all(isinstance(i, str) for i in v)
+
+P = ParamSpec(&quot;P&quot;); R = TypeVar(&quot;R&quot;)
+def logged(f: Callable[P, R]) -&gt; Callable[P, R]:      # typed decorator keeps the signature
+    @functools.wraps(f)
+    def w(*a: P.args, **k: P.kwargs) -&gt; R:
+        return f(*a, **k)
+    return w
+print(conv(3), conv(&quot;4&quot;))
+</code></pre>
+<pre><code class="language-output">3 4
+</code></pre>
+<h3 id="174-running-a-type-checker-runtime-access">17.4 Running a type checker, runtime access</h3>
+<p>Install and run <code>mypy your_file.py</code> or <code>pyright</code>. At runtime use <code>typing.get_type_hints(obj)</code> and <code>__annotations__</code>. <code>from __future__ import annotations</code> defers annotation evaluation (string-like); Python 3.14 makes deferred evaluation the default (PEP 649).</p>
+</section>
+<section class="chapter" id="18-memory-management-and-the-interpreter" data-title="18. Memory management and the interpreter"><h2 id="18-memory-management-and-the-interpreter">18. Memory management and the interpreter</h2>
+<h3 id="181-reference-counting-and-the-garbage-collector">18.1 Reference counting and the garbage collector</h3>
+<p>CPython frees most objects the instant their reference count hits zero. A cyclic garbage collector (generational: 0, 1, 2) reclaims reference cycles.</p>
+<pre><code class="language-python">import sys, gc, weakref
+
+x = []
+print(sys.getrefcount(x) - 1)       # minus the temporary argument reference
+y = x
+print(sys.getrefcount(x) - 1)
+
+class Node:
+    def __init__(self): self.other = None
+a, b = Node(), Node()
+a.other, b.other = b, a             # cycle
+r = weakref.ref(a)
+del a, b
+print(r() is not None)              # still alive until the GC runs
+gc.collect()
+print(r() is None)
+</code></pre>
+<pre><code class="language-output">1
+2
+True
+True
+</code></pre>
+<h3 id="182-weak-references">18.2 Weak references</h3>
+<p><code>weakref.ref</code>, <code>WeakValueDictionary</code>, <code>WeakSet</code> and <code>weakref.finalize</code> let you refer to objects without keeping them alive (caches, observer lists).</p>
+<pre><code class="language-python">import weakref
+class Big: pass
+cache = weakref.WeakValueDictionary()
+obj = Big(); cache[&quot;k&quot;] = obj
+print(len(cache)); del obj; print(len(cache))
+</code></pre>
+<pre><code class="language-output">1
+0
+</code></pre>
+<h3 id="183-interning-and-small-int-caching">18.3 Interning and small-int caching</h3>
+<pre><code class="language-python">a = 256; b = 256
+print(a is b)                       # small ints (-5..256) are cached in CPython
+import sys
+s1 = sys.intern(&quot;hello world!&quot;); s2 = sys.intern(&quot;hello world!&quot;)
+print(s1 is s2)
+</code></pre>
+<pre><code class="language-output">True
+True
+</code></pre>
+<p>Never rely on <code>is</code> for value comparison; this is an implementation detail.</p>
+<h3 id="184-measuring-memory">18.4 Measuring memory</h3>
+<pre><code class="language-python">import sys, tracemalloc
+tracemalloc.start()
+data = [i for i in range(10_000)]
+cur, peak = tracemalloc.get_traced_memory()
+print(cur &gt; 0, sys.getsizeof([]) &lt; sys.getsizeof(data))
+tracemalloc.stop()
+</code></pre>
+<pre><code class="language-output">True True
+</code></pre>
+<p><code>sys.getsizeof</code> is shallow. Reduce memory with generators, <code>__slots__</code>, <code>array</code>, NumPy, interning, and by freeing references.</p>
+<h3 id="185-bytecode-and-the-data-model-under-the-hood">18.5 Bytecode and the data model under the hood</h3>
+<pre><code class="language-python">import dis
+def add(a, b): return a + b
+dis.dis(add)
+</code></pre>
+<pre><code class="language-output">  2           RESUME                   0
+              LOAD_FAST_LOAD_FAST      1 (a, b)
+              BINARY_OP                0 (+)
+              RETURN_VALUE
+</code></pre>
+<p>CPython compiles source to bytecode (<code>.pyc</code> in <code>__pycache__</code>) then runs it on a stack-based virtual machine. Other implementations: PyPy (JIT), Jython, IronPython, MicroPython.</p>
+<h3 id="186-strings-bytes-and-encoding">18.6 Strings, bytes and encoding</h3>
+<p><code>str</code> is Unicode text; <code>bytes</code> is raw data. Encode and decode explicitly, and open text files with <code>encoding="utf-8"</code>.</p>
+<pre><code class="language-python">s = &quot;café&quot;
+b = s.encode(&quot;utf-8&quot;)
+print(len(s), len(b), b.decode(&quot;utf-8&quot;))
+</code></pre>
+<pre><code class="language-output">4 5 café
+</code></pre>
+</section>
+<section class="chapter" id="19-modules-packages-and-the-import-system" data-title="19. Modules, packages and the import system"><h2 id="19-modules-packages-and-the-import-system">19. Modules, packages and the import system</h2>
+<h3 id="191-modules-and-packages">19.1 Modules and packages</h3>
+<p>A module is a <code>.py</code> file; a package is a directory of modules (with <code>__init__.py</code>, or a namespace package without). Imported modules are cached in <code>sys.modules</code> and executed once.</p>
+<pre><code class="language-python">import sys, importlib, math, types
+print(&quot;math&quot; in sys.modules, isinstance(math, types.ModuleType), math.__name__)
+import json as j
+from os.path import join as pjoin
+print(pjoin(&quot;a&quot;, &quot;b&quot;), j.dumps({&quot;k&quot;: 1}))
+</code></pre>
+<pre><code class="language-output">True True math
+a/b {&quot;k&quot;: 1}
+</code></pre>
+<h3 id="192-layout-and-__main__">19.2 Layout and <code>__main__</code></h3>
+<pre><code class="language-python">mypkg/
+    __init__.py        # may re-export: from .core import Thing; __all__ = [&quot;Thing&quot;]
+    core.py
+    utils/
+        __init__.py
+        helpers.py
+    __main__.py        # enables: python -m mypkg
+</code></pre>
+<p>Absolute imports (<code>from mypkg.core import X</code>) are preferred; relative imports (<code>from .core import X</code>, <code>from ..utils import y</code>) work only inside packages. Guard script behaviour with <code>if __name__ == "__main__":</code>. Beware circular imports: restructure, import inside functions, or import the module rather than names.</p>
+<h3 id="193-search-path-and-dynamic-imports">19.3 Search path and dynamic imports</h3>
+<p><code>sys.path</code> lists search locations (current dir, <code>PYTHONPATH</code>, site-packages). <code>importlib.import_module("pkg.mod")</code> imports by string; <code>importlib.reload</code> re-executes; import hooks (<code>sys.meta_path</code>, finders and loaders) customise importing; <code>importlib.metadata</code> reads installed package info; <code>importlib.resources</code> reads package data files.</p>
+<pre><code class="language-python">import importlib
+m = importlib.import_module(&quot;collections&quot;)
+print(m.OrderedDict.__name__)
+</code></pre>
+<pre><code class="language-output">OrderedDict
+</code></pre>
+<h3 id="194-virtual-environments-and-packaging">19.4 Virtual environments and packaging</h3>
+<pre><code class="language-python">python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install requests
+pip freeze &gt; requirements.txt
+</code></pre>
+<p>Modern projects describe metadata and dependencies in <code>pyproject.toml</code> (PEP 621) and build with <code>build</code>, <code>hatch</code>, <code>poetry</code>, <code>uv</code> or <code>setuptools</code>. Publish to PyPI with <code>twine</code>. Use <code>uv</code> or <code>pip-tools</code> for reproducible lockfiles, <code>pipx</code> for CLI tools.</p>
+</section>
+<section class="chapter" id="20-design-principles-and-patterns" data-title="20. Design principles and patterns"><h2 id="20-design-principles-and-patterns">20. Design principles and patterns</h2>
+<h3 id="201-solid-in-python-terms">20.1 SOLID in Python terms</h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Idea</th>
+<th>Python angle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>S</strong>ingle Responsibility</td>
+<td>one reason to change</td>
+<td>small classes and modules</td>
+</tr>
+<tr>
+<td><strong>O</strong>pen/Closed</td>
+<td>extend without modifying</td>
+<td>polymorphism, plugins, decorators</td>
+</tr>
+<tr>
+<td><strong>L</strong>iskov Substitution</td>
+<td>subtypes honour contracts</td>
+<td>do not narrow inputs or break outputs</td>
+</tr>
+<tr>
+<td><strong>I</strong>nterface Segregation</td>
+<td>small focused interfaces</td>
+<td>many small Protocols or ABCs</td>
+</tr>
+<tr>
+<td><strong>D</strong>ependency Inversion</td>
+<td>depend on abstractions</td>
+<td>inject collaborators in <code>__init__</code></td>
+</tr>
+</tbody>
+</table>
+<p>Also: DRY, KISS, YAGNI, Law of Demeter, composition over inheritance, "explicit is better than implicit" (<code>import this</code>).</p>
+<h3 id="202-creational-patterns">20.2 Creational patterns</h3>
+<pre><code class="language-python"># Factory (registry-based)
+class Shape: pass
+class Circle(Shape): pass
+class Square(Shape): pass
+FACTORY = {&quot;circle&quot;: Circle, &quot;square&quot;: Square}
+def make(kind): return FACTORY[kind]()
+print(type(make(&quot;circle&quot;)).__name__)
+
+# Singleton via module (idiomatic) or metaclass (chapter 10); a module is a natural singleton.
+
+# Builder (fluent)
+class QueryBuilder:
+    def __init__(self): self.parts = []
+    def select(self, c): self.parts.append(f&quot;SELECT {c}&quot;); return self
+    def frm(self, t): self.parts.append(f&quot;FROM {t}&quot;); return self
+    def where(self, c): self.parts.append(f&quot;WHERE {c}&quot;); return self
+    def build(self): return &quot; &quot;.join(self.parts)
+print(QueryBuilder().select(&quot;*&quot;).frm(&quot;users&quot;).where(&quot;age &gt; 18&quot;).build())
+
+# Prototype
+import copy
+proto = {&quot;cfg&quot;: [1, 2]}
+clone = copy.deepcopy(proto)
+</code></pre>
+<pre><code class="language-output">Circle
+SELECT * FROM users WHERE age &gt; 18
+</code></pre>
+<p>Abstract Factory is a family of factories; with first-class classes and functions, most creational patterns shrink to a dict or a function.</p>
+<h3 id="203-structural-patterns">20.3 Structural patterns</h3>
+<pre><code class="language-python"># Adapter
+class OldAPI:
+    def fetch_data(self): return &quot;data&quot;
+class Adapter:
+    def __init__(self, old): self.old = old
+    def get(self): return self.old.fetch_data()
+
+# Decorator pattern via composition (distinct from @decorators)
+class Coffee:
+    def cost(self): return 5
+class Milk:
+    def __init__(self, c): self.c = c
+    def cost(self): return self.c.cost() + 2
+print(Adapter(OldAPI()).get(), Milk(Milk(Coffee())).cost())
+
+# Facade, Proxy, Composite, Flyweight, Bridge follow the same idea: wrap, delegate, or share.
+class Proxy:
+    def __init__(self, target): self._t = target
+    def __getattr__(self, name):
+        print(&quot;accessing&quot;, name)
+        return getattr(self._t, name)
+print(Proxy([3, 1, 2]).count(1))
+</code></pre>
+<pre><code class="language-output">data 9
+accessing count
+1
+</code></pre>
+<h3 id="204-behavioral-patterns">20.4 Behavioral patterns</h3>
+<pre><code class="language-python"># Strategy: pass behaviour as a function
+def apply(prices, discount): return [discount(p) for p in prices]
+print(apply([100, 200], lambda p: p * 0.9))
+
+# Observer
+class Subject:
+    def __init__(self): self._subs = []
+    def subscribe(self, fn): self._subs.append(fn)
+    def notify(self, *a): [fn(*a) for fn in self._subs]
+s = Subject(); s.subscribe(lambda e: print(&quot;got&quot;, e)); s.notify(&quot;event&quot;)
+
+# Command with undo
+class Editor:
+    def __init__(self): self.text, self.history = &quot;&quot;, []
+    def do(self, add): self.history.append(self.text); self.text += add
+    def undo(self): self.text = self.history.pop()
+e = Editor(); e.do(&quot;ab&quot;); e.do(&quot;cd&quot;); e.undo(); print(e.text)
+
+# State
+class Light:
+    transitions = {&quot;red&quot;: &quot;green&quot;, &quot;green&quot;: &quot;yellow&quot;, &quot;yellow&quot;: &quot;red&quot;}
+    def __init__(self): self.state = &quot;red&quot;
+    def next(self): self.state = self.transitions[self.state]
+l = Light(); l.next(); print(l.state)
+
+# Template Method
+from abc import ABC, abstractmethod
+class Report(ABC):
+    def run(self): return f&quot;{self.header()} | {self.body()}&quot;
+    def header(self): return &quot;REPORT&quot;
+    @abstractmethod
+    def body(self): ...
+class Sales(Report):
+    def body(self): return &quot;sales data&quot;
+print(Sales().run())
+</code></pre>
+<pre><code class="language-output">[90.0, 180.0]
+got event
+ab
+green
+REPORT | sales data
+</code></pre>
+<p>Iterator (chapter 12), Chain of Responsibility, Mediator, Memento, Visitor (see <code>functools.singledispatch</code>), and Interpreter are other classics.</p>
+<h3 id="205-dependency-injection-and-the-repository-pattern">20.5 Dependency injection and the repository pattern</h3>
+<pre><code class="language-python">from typing import Protocol
+class Repo(Protocol):
+    def get(self, id: int) -&gt; str: ...
+class MemoryRepo:
+    def get(self, id): return f&quot;user{id}&quot;
+class Service:
+    def __init__(self, repo: Repo): self.repo = repo       # injected abstraction
+    def greet(self, id): return f&quot;Hello {self.repo.get(id)}&quot;
+print(Service(MemoryRepo()).greet(7))
+</code></pre>
+<pre><code class="language-output">Hello user7
+</code></pre>
+<p>Injection makes testing trivial: pass a fake instead of the real database.</p>
+<h3 id="206-code-smells-and-anti-patterns">20.6 Code smells and anti-patterns</h3>
+<p>God classes, deep inheritance trees, mutable default args, bare <code>except</code>, global state, over-using <code>isinstance</code> chains, premature abstraction, "getter/setter" Java style, over-engineering with patterns Python does not need.</p>
+</section>
+<section class="chapter" id="21-testing-and-quality" data-title="21. Testing and quality"><h2 id="21-testing-and-quality">21. Testing and quality</h2>
+<h3 id="211-unittest-pytest-and-doctest">21.1 <code>unittest</code>, <code>pytest</code> and <code>doctest</code></h3>
+<pre><code class="language-python">import unittest
+
+def add(a, b): return a + b
+
+class TestAdd(unittest.TestCase):
+    def setUp(self): self.base = 10
+    def test_ints(self): self.assertEqual(add(2, 3), 5)
+    def test_raises(self):
+        with self.assertRaises(TypeError): add(1, None)
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestAdd)
+result = unittest.TextTestRunner(verbosity=0).run(suite)
+print(&quot;passed:&quot;, result.wasSuccessful())
+</code></pre>
+<pre><code class="language-output">passed: True
+</code></pre>
+<p>pytest style (run with <code>pytest</code>):</p>
+<pre><code class="language-python">import pytest
+
+def test_add(): assert add(2, 3) == 5
+
+@pytest.mark.parametrize(&quot;a,b,exp&quot;, [(1, 1, 2), (0, 0, 0), (-1, 1, 0)])
+def test_many(a, b, exp): assert add(a, b) == exp
+
+@pytest.fixture
+def db(): 
+    conn = make_conn(); yield conn; conn.close()      # setup / teardown
+
+def test_err(): 
+    with pytest.raises(ZeroDivisionError): 1 / 0
+</code></pre>
+<p><code>doctest</code> runs examples embedded in docstrings.</p>
+<pre><code class="language-python">import doctest
+def double(x):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; double(4)
+    8
+    &quot;&quot;&quot;
+    return x * 2
+print(doctest.testmod())
+</code></pre>
+<pre><code class="language-output">TestResults(failed=0, attempted=1)
+</code></pre>
+<h3 id="212-mocking">21.2 Mocking</h3>
+<pre><code class="language-python">from unittest.mock import Mock, patch, MagicMock
+import os
+
+m = Mock(return_value=42)
+print(m(1), m.call_args, m.called)
+
+with patch(&quot;os.getcwd&quot;, return_value=&quot;/fake&quot;):
+    print(os.getcwd())
+
+client = MagicMock()
+client.get.return_value.status = 200
+print(client.get(&quot;/x&quot;).status)
+</code></pre>
+<pre><code class="language-output">42 call(1) True
+/fake
+200
+</code></pre>
+<p>Mock at the boundary (network, clock, filesystem), patch where the name is <strong>looked up</strong>, not where it is defined. Prefer dependency injection to heavy patching.</p>
+<h3 id="213-quality-tooling">21.3 Quality tooling</h3>
+<p><code>ruff</code> or <code>flake8</code> (lint), <code>black</code> or <code>ruff format</code> (format), <code>isort</code>, <code>mypy</code> / <code>pyright</code> (types), <code>coverage</code> / <code>pytest-cov</code>, <code>pre-commit</code> hooks, <code>tox</code> / <code>nox</code>, CI pipelines. Write docstrings (Google or NumPy style), follow PEP 8 and PEP 257, use <code>logging</code> over <code>print</code>.</p>
+</section>
+<section class="chapter" id="22-standard-library-essentials" data-title="22. Standard library essentials"><h2 id="22-standard-library-essentials">22. Standard library essentials</h2>
+<h3 id="221-collections">22.1 <code>collections</code></h3>
+<pre><code class="language-python">from collections import Counter, defaultdict, deque, OrderedDict, ChainMap
+
+print(Counter(&quot;mississippi&quot;).most_common(2))
+dd = defaultdict(list); dd[&quot;a&quot;].append(1); print(dict(dd))
+dq = deque([1, 2, 3], maxlen=3); dq.appendleft(0); dq.rotate(1); print(dq)
+print(ChainMap({&quot;a&quot;: 1}, {&quot;a&quot;: 2, &quot;b&quot;: 3})[&quot;b&quot;])
+</code></pre>
+<pre><code class="language-output">[('i', 4), ('s', 4)]
+{'a': [1]}
+deque([2, 0, 1], maxlen=3)
+3
+</code></pre>
+<h3 id="222-pathlib-os-shutil-json-csv">22.2 <code>pathlib</code>, <code>os</code>, <code>shutil</code>, <code>json</code>, <code>csv</code></h3>
+<pre><code class="language-python">import json, csv, io
+from pathlib import Path
+
+p = Path(&quot;/tmp&quot;) / &quot;demo_dir&quot; / &quot;file.txt&quot;
+print(p.name, p.suffix, p.stem, p.parent.name, p.is_absolute())
+data = {&quot;name&quot;: &quot;Ana&quot;, &quot;tags&quot;: [&quot;a&quot;, &quot;b&quot;], &quot;n&quot;: 1.5}
+text = json.dumps(data, indent=2, sort_keys=True)
+print(json.loads(text) == data)
+
+buf = io.StringIO()
+w = csv.DictWriter(buf, fieldnames=[&quot;a&quot;, &quot;b&quot;]); w.writeheader(); w.writerow({&quot;a&quot;: 1, &quot;b&quot;: 2})
+print(buf.getvalue().splitlines())
+</code></pre>
+<pre><code class="language-output">file.txt .txt file demo_dir True
+True
+['a,b', '1,2']
+</code></pre>
+<h3 id="223-dates-regex-math-random">22.3 Dates, regex, math, random</h3>
+<pre><code class="language-python">import re, math, random, statistics
+from datetime import datetime, timedelta, timezone, date
+
+d = datetime(2026, 11, 13, 9, 30, tzinfo=timezone.utc)
+print(d + timedelta(days=30), d.strftime(&quot;%d %b %Y&quot;), date(2026, 1, 1).weekday())
+
+m = re.search(r&quot;(?P&lt;user&gt;\w+)@(?P&lt;host&gt;[\w.]+)&quot;, &quot;mail ana@example.com now&quot;)
+print(m.group(&quot;user&quot;), m.group(&quot;host&quot;), re.findall(r&quot;\d+&quot;, &quot;a1b22c333&quot;))
+print(re.sub(r&quot;\s+&quot;, &quot; &quot;, &quot;a   b \n c&quot;))
+
+random.seed(1)
+print(math.gcd(12, 18), math.isclose(0.1 + 0.2, 0.3), statistics.mean([1, 2, 3, 4]))
+</code></pre>
+<pre><code class="language-output">2026-12-13 09:30:00+00:00 13 Nov 2026 3
+ana example.com ['1', '22', '333']
+a b c
+6 True 2.5
+</code></pre>
+<h3 id="224-logging">22.4 <code>logging</code></h3>
+<pre><code class="language-python">import logging, sys
+logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+                    format=&quot;%(levelname)s %(name)s: %(message)s&quot;)
+log = logging.getLogger(&quot;app.db&quot;)
+log.info(&quot;connected&quot;)
+log.warning(&quot;slow query %s ms&quot;, 350)
+</code></pre>
+<pre><code class="language-output">INFO app.db: connected
+WARNING app.db: slow query 350 ms
+</code></pre>
+<p>Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL. Use per-module loggers, handlers, formatters, and never log secrets.</p>
+<h3 id="225-argparse-subprocess-sqlite3-decimal-fractions">22.5 <code>argparse</code>, <code>subprocess</code>, <code>sqlite3</code>, <code>decimal</code>, <code>fractions</code></h3>
+<pre><code class="language-python">import argparse, subprocess, sqlite3, sys
+from decimal import Decimal
+from fractions import Fraction
+
+ap = argparse.ArgumentParser()
+ap.add_argument(&quot;--n&quot;, type=int, default=1)
+print(ap.parse_args([&quot;--n&quot;, &quot;5&quot;]).n)
+
+out = subprocess.run([sys.executable, &quot;-c&quot;, &quot;print('hi')&quot;], capture_output=True, text=True, check=True)
+print(out.stdout.strip())
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;create table t(a int)&quot;); con.executemany(&quot;insert into t values (?)&quot;, [(1,), (2,)])
+print(con.execute(&quot;select sum(a) from t&quot;).fetchone())
+print(Decimal(&quot;0.1&quot;) + Decimal(&quot;0.2&quot;), Fraction(1, 3) + Fraction(1, 6))
+</code></pre>
+<pre><code class="language-output">5
+hi
+(3,)
+0.3 1/2
+</code></pre>
+<p>Also: <code>typing</code>, <code>functools</code>, <code>itertools</code>, <code>heapq</code>, <code>bisect</code>, <code>array</code>, <code>struct</code>, <code>hashlib</code>, <code>secrets</code>, <code>uuid</code>, <code>tempfile</code>, <code>zipfile</code>, <code>tarfile</code>, <code>urllib</code>, <code>http.server</code>, <code>socket</code>, <code>queue</code>, <code>sched</code>, <code>string</code>, <code>textwrap</code>, <code>pprint</code>, <code>timeit</code>, <code>enum</code>, <code>abc</code>, <code>contextvars</code>, <code>tomllib</code>, <code>zoneinfo</code>.</p>
+<pre><code class="language-python">import heapq, bisect, hashlib, uuid
+h = [5, 1, 3]; heapq.heapify(h); print(heapq.heappop(h), heapq.nlargest(2, [4, 9, 1]))
+print(bisect.bisect_left([1, 3, 5], 4), hashlib.sha256(b&quot;abc&quot;).hexdigest()[:12], len(str(uuid.uuid4())))
+</code></pre>
+<pre><code class="language-output">1 [9, 4]
+2 ba7816bf8f01 36
+</code></pre>
+</section>
+<section class="chapter" id="23-performance-and-profiling" data-title="23. Performance and profiling"><h2 id="23-performance-and-profiling">23. Performance and profiling</h2>
+<h3 id="231-measure-first">23.1 Measure first</h3>
+<pre><code class="language-python">import timeit, cProfile, pstats, io
+
+print(timeit.timeit(&quot;sum(range(1000))&quot;, number=1000) &gt; 0)
+
+def slow():
+    return sum(i * i for i in range(50_000))
+pr = cProfile.Profile(); pr.enable(); slow(); pr.disable()
+s = io.StringIO(); pstats.Stats(pr, stream=s).sort_stats(&quot;cumulative&quot;).print_stats(3)
+print(s.getvalue().splitlines()[0][:40])
+</code></pre>
+<pre><code class="language-output">True
+         50004 function calls in 0.009 s
+</code></pre>
+<p>Tools: <code>timeit</code>, <code>cProfile</code>/<code>pstats</code>, <code>py-spy</code>, <code>line_profiler</code>, <code>memory_profiler</code>, <code>tracemalloc</code>, <code>scalene</code>.</p>
+<h3 id="232-practical-speedups">23.2 Practical speedups</h3>
+<ol>
+<li>Choose the right algorithm and data structure (<code>set</code>/<code>dict</code> lookups are O(1), <code>list</code> membership is O(n), <code>deque</code> for queues, <code>bisect</code> for sorted data).</li>
+<li>Prefer built-ins and comprehensions, avoid repeated attribute lookups in hot loops, use <code>"".join(parts)</code> instead of <code>+=</code>.</li>
+<li>Cache pure results with <code>lru_cache</code>.</li>
+<li>Use generators for large streams, <code>__slots__</code> for many small objects.</li>
+<li>Vectorise numbers with NumPy or pandas.</li>
+<li>Parallelise: processes for CPU, asyncio or threads for I/O.</li>
+<li>Last resort: Cython, Numba, mypyc, PyPy, or a Rust/C extension.</li>
+</ol>
+<pre><code class="language-python">import timeit
+setup = &quot;data = list(range(10000)); s = set(data)&quot;
+print(timeit.timeit(&quot;9999 in data&quot;, setup, number=2000) &gt; timeit.timeit(&quot;9999 in s&quot;, setup, number=2000))
+</code></pre>
+<pre><code class="language-output">True
+</code></pre>
+<h3 id="233-big-o-cheat-sheet">23.3 Big-O cheat sheet</h3>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Access</th>
+<th>Search</th>
+<th>Insert/Append</th>
+<th>Delete</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td>O(1)</td>
+<td>O(n)</td>
+<td>O(1) append, O(n) middle</td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td><code>dict</code> / <code>set</code></td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+</tr>
+<tr>
+<td><code>deque</code></td>
+<td>O(n) middle</td>
+<td>O(n)</td>
+<td>O(1) both ends</td>
+<td>O(1) ends</td>
+</tr>
+<tr>
+<td><code>heapq</code></td>
+<td>O(1) min</td>
+<td>O(n)</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>sorted list + <code>bisect</code></td>
+<td>O(1)</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td>O(n)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="chapter" id="24-interview-questions-with-answers" data-title="24. Interview questions with answers"><h2 id="24-interview-questions-with-answers">24. Interview questions with answers</h2>
+<h4 id="what-is-the-difference-between-is-and">What is the difference between <code>is</code> and <code>==</code>?</h4>
+<p><code>is</code> tests identity (same object in memory); <code>==</code> tests value equality through <code>__eq__</code>.</p>
+<h4 id="what-is-the-difference-between-a-class-method-static-method-and-instance-method">What is the difference between a class method, static method and instance method?</h4>
+<p>Instance methods receive the instance (<code>self</code>), class methods receive the class (<code>cls</code>) and suit alternative constructors, static methods receive nothing extra and are plain functions namespaced in the class.</p>
+<h4 id="what-does-super-do-in-multiple-inheritance">What does <code>super()</code> do in multiple inheritance?</h4>
+<p>It returns a proxy to the next class in the instance type's MRO, not simply the parent. This lets every class in a diamond run exactly once when all use <code>super()</code> cooperatively.</p>
+<h4 id="how-is-the-mro-computed">How is the MRO computed?</h4>
+<p>With the C3 linearization algorithm: each class precedes its parents and the left-to-right order of bases is preserved. Inspect it with <code>cls.__mro__</code>.</p>
+<h4 id="__str__-versus-__repr__"><code>__str__</code> versus <code>__repr__</code>?</h4>
+<p><code>__repr__</code> is unambiguous and aimed at developers (ideally evaluable); <code>__str__</code> is readable output for users. <code>str()</code> falls back to <code>__repr__</code> if <code>__str__</code> is missing.</p>
+<h4 id="why-does-defining-__eq__-make-my-class-unhashable">Why does defining <code>__eq__</code> make my class unhashable?</h4>
+<p>Python sets <code>__hash__</code> to <code>None</code> when you define <code>__eq__</code> without <code>__hash__</code>, because equal objects must hash equally. Define <code>__hash__</code> from immutable fields to restore hashability.</p>
+<h4 id="what-are-__slots__-and-when-would-you-use-them">What are <code>__slots__</code> and when would you use them?</h4>
+<p>They replace the per-instance <code>__dict__</code> with fixed storage. Use them for millions of small objects to save memory and to forbid stray attributes.</p>
+<h4 id="explain-descriptors-in-one-paragraph">Explain descriptors in one paragraph.</h4>
+<p>A descriptor is a class attribute whose type defines <code>__get__</code>, <code>__set__</code> or <code>__delete__</code>. Python consults it during attribute access. Properties, methods, <code>classmethod</code>, <code>staticmethod</code> and <code>__slots__</code> are all descriptors. Data descriptors take priority over the instance dictionary; non-data descriptors do not.</p>
+<h4 id="what-is-a-metaclass">What is a metaclass?</h4>
+<p>The class of a class. <code>type</code> is the default. It controls class creation (<code>__new__</code>, <code>__init__</code>, <code>__prepare__</code>) and instantiation (<code>__call__</code>). Prefer class decorators or <code>__init_subclass__</code> when they suffice.</p>
+<h4 id="what-is-the-difference-between-a-decorator-and-a-closure">What is the difference between a decorator and a closure?</h4>
+<p>A closure is a function that captures variables of its enclosing scope. A decorator is a callable that wraps another callable and is usually implemented with a closure.</p>
+<h4 id="iterator-versus-iterable-versus-generator">Iterator versus iterable versus generator?</h4>
+<p>An iterable can produce an iterator through <code>__iter__</code>. An iterator implements <code>__next__</code>. A generator is an iterator created by a function with <code>yield</code> or by a generator expression.</p>
+<h4 id="what-is-the-gil-and-how-do-you-work-around-it">What is the GIL and how do you work around it?</h4>
+<p>A lock allowing one thread to run Python bytecode at a time in standard CPython. Use processes for CPU-bound work, threads or asyncio for I/O-bound work, or native extensions that release the lock. A free-threaded build exists from 3.13.</p>
+<h4 id="threading-vs-multiprocessing-vs-asyncio"><code>threading</code> vs <code>multiprocessing</code> vs <code>asyncio</code>?</h4>
+<p>Threads share memory and suit blocking I/O; processes give true CPU parallelism with separate memory and pickling cost; asyncio runs many cooperative tasks on one thread and needs non-blocking libraries.</p>
+<h4 id="how-does-python-manage-memory">How does Python manage memory?</h4>
+<p>Private heap, reference counting for immediate release, a generational cyclic garbage collector, and small-object allocators (pymalloc). <code>weakref</code> avoids keeping objects alive.</p>
+<h4 id="shallow-copy-vs-deep-copy">Shallow copy vs deep copy?</h4>
+<p>Shallow copies the container but shares nested objects; deep copy recursively duplicates everything (<code>copy.deepcopy</code>), and handles cycles.</p>
+<h4 id="what-is-the-mutable-default-argument-trap">What is the mutable default argument trap?</h4>
+<p>Defaults are evaluated once at function definition, so a mutable default is shared across calls. Use <code>None</code> and create the object inside, or <code>field(default_factory=...)</code> in dataclasses.</p>
+<h4 id="abstract-class-vs-interface-vs-protocol">Abstract class vs interface vs Protocol?</h4>
+<p>ABCs declare abstract methods and enforce them at instantiation (nominal typing). Python has no interface keyword; ABCs with only abstract methods or Protocols (structural typing) fill the role.</p>
+<h4 id="what-is-duck-typing">What is duck typing?</h4>
+<p>Judging an object by the methods it supports rather than its declared class.</p>
+<h4 id="how-do-property-cached_property-and-functoolslru_cache-differ">How do <code>@property</code>, <code>@cached_property</code> and <code>@functools.lru_cache</code> differ?</h4>
+<p><code>property</code> computes on every access; <code>cached_property</code> computes once per instance and stores the result; <code>lru_cache</code> memoizes function results by arguments (arguments must be hashable).</p>
+<h4 id="what-is-__name__-__main__-for">What is <code>__name__ == "__main__"</code> for?</h4>
+<p>It is true only when a file runs as a script, letting the same file act as an importable module and a program.</p>
+<h4 id="what-is-the-difference-between-deepcopy-of-an-object-and-pickling-it">What is the difference between <code>deepcopy</code> of an object and pickling it?</h4>
+<p>Both can duplicate an object graph. Pickle serialises to bytes for storage or transport (and executes arbitrary code on load, so never unpickle untrusted data).</p>
+<h4 id="how-do-you-make-a-class-iterable-a-context-manager-callable-sortable">How do you make a class iterable, a context manager, callable, sortable?</h4>
+<p><code>__iter__</code>, <code>__enter__/__exit__</code>, <code>__call__</code>, and <code>__lt__</code> (with <code>total_ordering</code>) respectively.</p>
+<h4 id="what-changed-in-recent-python-versions-that-every-developer-should-know">What changed in recent Python versions that every developer should know?</h4>
+<p>Pattern matching (3.10), exception groups and TaskGroup (3.11), PEP 695 generics and the <code>type</code> statement (3.12), the experimental free-threaded and JIT builds (3.13), and deferred annotation evaluation (3.14).</p>
+</section>
+<section class="chapter" id="25-practice-projects-and-learning-roadmap" data-title="25. Practice projects and learning roadmap"><h2 id="25-practice-projects-and-learning-roadmap">25. Practice projects and learning roadmap</h2>
+<h3 id="251-exercises-by-chapter">25.1 Exercises by chapter</h3>
+<ol>
+<li><strong>Classes:</strong> build <code>BankAccount</code> with a validated <code>balance</code> property, a <code>from_dict</code> class method, and a transaction log.</li>
+<li><strong>Inheritance:</strong> model <code>Employee &gt; Manager &gt; Director</code> with <code>super()</code>; then redo it with composition and compare.</li>
+<li><strong>Dunder methods:</strong> write <code>Fraction</code> or <code>Matrix</code> supporting <code>+ - * ==</code>, <code>repr</code>, <code>iter</code>, <code>len</code>, indexing and comparison.</li>
+<li><strong>Abstraction:</strong> define a <code>Storage</code> ABC with <code>FileStorage</code> and <code>MemoryStorage</code>; add a Protocol version.</li>
+<li><strong>Descriptors:</strong> implement <code>Typed(int)</code> and <code>Range(0, 100)</code> validators and a tiny ORM-style <code>Model</code>.</li>
+<li><strong>Metaclasses:</strong> auto-register plugins and enforce that every subclass defines <code>run</code>.</li>
+<li><strong>Decorators:</strong> write <code>@retry</code>, <code>@timed</code>, <code>@cache_with_ttl</code>, <code>@validate_types</code>.</li>
+<li><strong>Generators:</strong> stream a large log file, parse lines lazily, group with <code>itertools.groupby</code>.</li>
+<li><strong>Context managers:</strong> a <code>transaction()</code> that commits or rolls back, and an <code>async</code> version.</li>
+<li><strong>Concurrency:</strong> download 50 URLs with threads, then with asyncio; compare timings.</li>
+<li><strong>Typing:</strong> annotate a project and get <code>mypy --strict</code> to pass.</li>
+<li><strong>Testing:</strong> reach 90 percent coverage with pytest, fixtures, and mocks for network calls.</li>
+</ol>
+<h3 id="252-capstone-projects">25.2 Capstone projects</h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Project</th>
+<th>Concepts exercised</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Beginner</td>
+<td>Library management CLI</td>
+<td>classes, encapsulation, JSON persistence</td>
+</tr>
+<tr>
+<td>Intermediate</td>
+<td>Inventory system with plugins</td>
+<td>inheritance, ABCs, registry, dataclasses, tests</td>
+</tr>
+<tr>
+<td>Intermediate</td>
+<td>Event-driven chat simulator</td>
+<td>observer, asyncio, queues</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>Mini ORM</td>
+<td>descriptors, metaclasses, SQLite</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>Task scheduler / workflow engine</td>
+<td>decorators, generators, concurrency, context managers</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>Typed REST API client SDK</td>
+<td>Protocols, generics, dataclasses, retries, mocking</td>
+</tr>
+</tbody>
+</table>
+<h3 id="253-suggested-study-order-and-pacing">25.3 Suggested study order and pacing</h3>
+<p>Weeks 1 to 2: chapters 1 to 6. Weeks 3 to 4: chapters 7 to 8 and 14. Weeks 5 to 6: chapters 9 to 13. Weeks 7 to 8: chapters 15 to 18. Weeks 9 to 10: chapters 19 to 23 and a capstone. Revise with chapter 24 and the quiz.</p>
+<h3 id="254-where-to-go-next">25.4 Where to go next</h3>
+<p>Official docs (docs.python.org, especially <em>Data Model</em>, <em>Descriptor HowTo</em>, <em>asyncio</em>), "Fluent Python" by Luciano Ramalho, "Python Cookbook" by Beazley and Jones, PEP 8, 20, 484, 544, 557, 634, 695, Raymond Hettinger's talks, Real Python, and reading the source of well-written libraries (<code>requests</code>, <code>attrs</code>, <code>fastapi</code>, <code>pydantic</code>).</p>
+</section>
+<section class="chapter" id="26-cheat-sheet" data-title="26. Cheat sheet"><h2 id="26-cheat-sheet">26. Cheat sheet</h2>
+<h3 id="261-dunder-methods-at-a-glance">26.1 Dunder methods at a glance</h3>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lifecycle</td>
+<td><code>__new__ __init__ __del__</code></td>
+</tr>
+<tr>
+<td>Representation</td>
+<td><code>__repr__ __str__ __format__ __bytes__</code></td>
+</tr>
+<tr>
+<td>Comparison and hash</td>
+<td><code>__eq__ __ne__ __lt__ __le__ __gt__ __ge__ __hash__ __bool__</code></td>
+</tr>
+<tr>
+<td>Arithmetic</td>
+<td><code>__add__ __sub__ __mul__ __truediv__ __floordiv__ __mod__ __pow__ __matmul__ __neg__ __abs__</code> plus <code>__r*__</code> and <code>__i*__</code></td>
+</tr>
+<tr>
+<td>Containers</td>
+<td><code>__len__ __getitem__ __setitem__ __delitem__ __contains__ __iter__ __next__ __reversed__ __missing__</code></td>
+</tr>
+<tr>
+<td>Attributes</td>
+<td><code>__getattr__ __getattribute__ __setattr__ __delattr__ __dir__ __slots__</code></td>
+</tr>
+<tr>
+<td>Descriptors</td>
+<td><code>__get__ __set__ __delete__ __set_name__</code></td>
+</tr>
+<tr>
+<td>Calls and contexts</td>
+<td><code>__call__ __enter__ __exit__ __aenter__ __aexit__</code></td>
+</tr>
+<tr>
+<td>Async</td>
+<td><code>__await__ __aiter__ __anext__</code></td>
+</tr>
+<tr>
+<td>Class creation</td>
+<td><code>__init_subclass__ __class_getitem__ __prepare__ __instancecheck__ __subclasscheck__ __mro_entries__</code></td>
+</tr>
+<tr>
+<td>Copy and pickle</td>
+<td><code>__copy__ __deepcopy__ __reduce__ __getstate__ __setstate__</code></td>
+</tr>
+<tr>
+<td>Matching</td>
+<td><code>__match_args__</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="262-one-line-reminders">26.2 One-line reminders</h3>
+<ul>
+<li>Attribute lookup: data descriptor, instance dict, non-data descriptor or class attribute, <code>__getattr__</code>.</li>
+<li><code>super()</code> follows the MRO of the instance's class.</li>
+<li>Define <code>__eq__</code> and <code>__hash__</code> together; return <code>NotImplemented</code> for unsupported operands.</li>
+<li>Never use mutable defaults. Use <code>default_factory</code>.</li>
+<li>Decorators: use <code>functools.wraps</code>; extra arguments need one more nesting level.</li>
+<li>Generators are lazy, single-pass iterators.</li>
+<li>Always use <code>with</code> for resources; always <code>encoding="utf-8"</code> for text files.</li>
+<li>CPU-bound: processes. I/O-bound: asyncio or threads.</li>
+<li>Prefer composition, small interfaces, dependency injection, and tests.</li>
+<li>Measure before optimising.</li>
+</ul></section>
+    <section class="quiz chapter" id="quiz" data-title="Self-test quiz">
+      <h2>Self-test quiz</h2>
+      <p>Twenty questions across the whole handbook. Pick an answer to see the explanation.</p>
+      <div id="quizbox"></div>
+      <p class="score" id="score"></p>
+    </section>
+  </main>
+</div>
+<script>
+const QUIZ = [
+ {"q":"What does `a is b` compare?","o":["Equal values","Object identity","Equal types","Equal hashes"],"a":1,"e":"`is` checks that both names refer to the same object. `==` compares values."},
+ {"q":"What is printed by calling `add(1)` then `add(2)` with `def add(x, bucket=[]): bucket.append(x); return bucket`?","o":["[1] then [2]","[1] then [1, 2]","Error","[] then []"],"a":1,"e":"The default list is created once at definition time and shared across calls."},
+ {"q":"Which method creates the instance, before `__init__` runs?","o":["__create__","__make__","__new__","__build__"],"a":2,"e":"`__new__` allocates and returns the instance; `__init__` initializes it."},
+ {"q":"What does `__name` inside class `A` become?","o":["Private and unreachable","`_A__name`","`A.__name`","Deleted"],"a":1,"e":"Name mangling renames it to `_A__name` to avoid clashes. It is not a security feature."},
+ {"q":"In a diamond hierarchy where all classes call `super().method()`, how many times does the base class method run?","o":["Twice","Once","Zero","Depends on the Python version"],"a":1,"e":"C3 linearization puts the base last in the MRO, and cooperative super calls reach it once."},
+ {"q":"Which should a binary operator return when it does not support the operand type?","o":["Raise TypeError","Return None","Return NotImplemented","Return False"],"a":2,"e":"Returning `NotImplemented` lets Python try the reflected method on the other operand."},
+ {"q":"You define `__eq__` on a class but not `__hash__`. What happens?","o":["Hash falls back to id","Instances become unhashable","A warning only","Hash uses __eq__"],"a":1,"e":"Python sets `__hash__` to None, so instances cannot be dict keys or set members."},
+ {"q":"Which is a data descriptor?","o":["An object with only __get__","An object with __get__ and __set__","A plain function","A staticmethod"],"a":1,"e":"Defining `__set__` or `__delete__` makes it a data descriptor, which beats the instance `__dict__`."},
+ {"q":"A metaclass `__call__` runs when...","o":["The class is defined","An instance of the class is created","A method is called","The module is imported"],"a":1,"e":"`Meta.__call__` controls instantiation of classes that use it, which is how singletons are built."},
+ {"q":"What does `functools.wraps` do?","o":["Speeds up the function","Copies metadata like __name__ and __doc__ to the wrapper","Makes the function async","Caches results"],"a":1,"e":"It preserves the wrapped function's identity information for debugging and introspection."},
+ {"q":"What does `yield from sub` do?","o":["Returns sub","Delegates iteration to sub and forwards send/throw","Copies sub","Creates a thread"],"a":1,"e":"It lets a generator hand over to a sub-iterator transparently."},
+ {"q":"Which statement about `__exit__` is true?","o":["Returning True suppresses the exception","It must return None","It runs only on errors","It cannot see the exception"],"a":0,"e":"A truthy return value tells Python the exception was handled."},
+ {"q":"Best tool for 1000 concurrent network requests?","o":["multiprocessing","asyncio","Plain loop","Recursion"],"a":1,"e":"asyncio handles many I/O-bound tasks cheaply on one thread."},
+ {"q":"What does the GIL prevent in standard CPython?","o":["Any threading","Two threads running Python bytecode at the same instant","Multiprocessing","Async code"],"a":1,"e":"Threads still help for I/O, but CPU-bound Python code does not scale across threads."},
+ {"q":"Which pairs correctly: `ABC` vs `Protocol`?","o":["Both structural","ABC nominal, Protocol structural","ABC structural, Protocol nominal","Both nominal"],"a":1,"e":"ABCs require inheritance or registration; Protocols match by method shape."},
+ {"q":"Which dataclass option avoids the shared mutable default bug?","o":["field(default=[])","field(default_factory=list)","frozen=True","slots=True"],"a":1,"e":"`default_factory` builds a fresh object per instance. A bare list default raises ValueError."},
+ {"q":"How do you reclaim a reference cycle in CPython?","o":["Reference counting alone","The cyclic garbage collector","It leaks forever","del on one object"],"a":1,"e":"Refcounting cannot free cycles; the generational GC detects and collects them."},
+ {"q":"Which is true of `@classmethod`?","o":["Gets the instance as first arg","Gets the class as first arg","Gets no extra arg","Cannot be inherited"],"a":1,"e":"It receives `cls`, so it works correctly for subclasses and suits alternative constructors."},
+ {"q":"What will `match` with `case Point(x, 0):` rely on to bind `x` positionally?","o":["__slots__","__match_args__","__eq__","__init__ signature only"],"a":1,"e":"Dataclasses generate `__match_args__`; for other classes define it yourself."},
+ {"q":"Which approach fits 'run once when a subclass is defined' with the least machinery?","o":["Metaclass __new__","__init_subclass__","A decorator on each subclass","__getattr__"],"a":1,"e":"`__init_subclass__` is the lightweight hook for registries and validation."}
+]
+;
+const GROUPS = [["Part I · Object-oriented programming",1,8],["Part II · Advanced Python",9,18],["Part III · Engineering",19,23],["Part IV · Practice",24,26]];
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+let store = {};
+try { store = JSON.parse(localStorage.getItem("pyoop-done") || "{}"); } catch(e) {}
+const save = () => { try { localStorage.setItem("pyoop-done", JSON.stringify(store)); } catch(e) {} };
+
+/* ---- syntax highlighting ---- */
+const KW = new Set("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case type".split(" "));
+const BI = new Set("print len range int str float list dict set tuple bool bytes type isinstance issubclass super object property staticmethod classmethod hasattr getattr setattr delattr vars dir id iter next sorted reversed enumerate zip map filter sum min max abs any all open repr format callable Exception ValueError TypeError KeyError IndexError AttributeError RuntimeError StopIteration NotImplemented NotImplementedError".split(" "));
+const RE = /(#[^\n]*)|((?:[rbfuRBFU]{1,2})?(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'))|(@[A-Za-z_][\w.]*)|(\b\d[\d_]*(?:\.\d+)?(?:e[+-]?\d+)?\b)|([A-Za-z_]\w*)/g;
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function hl(src){
+  let out = "", last = 0, prev = "";
+  src.replace(RE, (m, com, str, dec, num, id, off) => {
+    out += esc(src.slice(last, off));
+    last = off + m.length;
+    if (com) out += `<span class="tc">${esc(m)}</span>`;
+    else if (str) out += `<span class="ts">${esc(m)}</span>`;
+    else if (dec) out += `<span class="td">${esc(m)}</span>`;
+    else if (num) out += `<span class="tn">${esc(m)}</span>`;
+    else if (id) {
+      if (KW.has(id)) out += `<span class="tk">${id}</span>`;
+      else if (prev === "def" || prev === "class") out += `<span class="tf">${id}</span>`;
+      else if (BI.has(id)) out += `<span class="tn">${id}</span>`;
+      else out += id;
+      prev = id; return m;
+    }
+    prev = ""; return m;
+  });
+  return out + esc(src.slice(last));
+}
+
+/* ---- decorate code blocks and tables ---- */
+$$("pre > code").forEach(code => {
+  const pre = code.parentElement;
+  const isOut = code.classList.contains("language-output");
+  const raw = code.textContent;
+  const wrap = document.createElement("div");
+  if (isOut) {
+    wrap.className = "outwrap";
+    wrap.innerHTML = '<div class="olab">Output</div>';
+    pre.replaceWith(wrap); wrap.appendChild(pre);
+    return;
+  }
+  code.innerHTML = hl(raw);
+  wrap.className = "codeblock";
+  pre.replaceWith(wrap); wrap.appendChild(pre);
+  const b = document.createElement("button");
+  b.className = "copy"; b.type = "button"; b.textContent = "Copy";
+  b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(raw); b.textContent = "Copied"; }
+    catch(e) { const r = document.createRange(); r.selectNodeContents(code); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selected"; }
+    setTimeout(() => b.textContent = "Copy", 1400);
+  });
+  wrap.appendChild(b);
+});
+$$("table code").forEach(c => { c.textContent = c.textContent.replace(/\\\|/g, "|"); });
+$$("table").forEach(t => { const w = document.createElement("div"); w.className = "tablewrap"; t.replaceWith(w); w.appendChild(t); });
+
+/* ---- navigation ---- */
+const chapters = $$("section.chapter");
+const navlist = $("#navlist");
+let html = "", gi = -1;
+chapters.forEach((sec, i) => {
+  const t = sec.dataset.title;
+  const num = parseInt(t, 10);
+  const g = Number.isNaN(num) ? -1 : GROUPS.findIndex(x => num >= x[1] && num <= x[2]);
+  if (g !== gi && g >= 0) { html += `<div class="group">${GROUPS[g][0]}</div>`; gi = g; }
+  if (g < 0 && gi !== 99) { html += `<div class="group">Test yourself</div>`; gi = 99; }
+  const subs = $$("h3", sec).map(h => `<a href="#${h.id}">${h.textContent.replace(/^\d+\.\d+\s*/,"")}</a>`).join("");
+  html += `<a class="nav${store[sec.id] ? " done" : ""}" href="#${sec.id}" data-id="${sec.id}"><span class="tick" title="Mark done" data-tick="${sec.id}">✓</span><span>${t}</span></a><div class="subs">${subs}</div>`;
+});
+navlist.innerHTML = html;
+
+function updateProgress(){
+  const ids = chapters.filter(s => s.id !== "quiz").map(s => s.id);
+  const n = ids.filter(id => store[id]).length;
+  $("#ptext").textContent = `${n} of ${ids.length} chapters done`;
+  $("#pbar").style.width = (100 * n / ids.length) + "%";
+}
+function setDone(id, v){
+  store[id] = v; save();
+  $(`a.nav[data-id="${id}"]`).classList.toggle("done", v);
+  const b = $(`#${id} .markdone`); if (b) { b.classList.toggle("done", v); b.textContent = v ? "Marked done" : "Mark chapter done"; }
+  updateProgress();
+}
+navlist.addEventListener("click", e => {
+  const t = e.target.closest("[data-tick]");
+  if (t) { e.preventDefault(); e.stopPropagation(); setDone(t.dataset.tick, !store[t.dataset.tick]); return; }
+  if (e.target.closest("a")) document.body.classList.remove("open");
+});
+
+chapters.forEach((sec, i) => {
+  if (sec.id === "quiz") return;
+  const end = document.createElement("div");
+  end.className = "chapter-end";
+  end.innerHTML = `<button type="button" class="markdone${store[sec.id] ? " done" : ""}">${store[sec.id] ? "Marked done" : "Mark chapter done"}</button>`;
+  end.firstChild.addEventListener("click", () => setDone(sec.id, !store[sec.id]));
+  const pg = document.createElement("div"); pg.className = "pager";
+  const prev = chapters[i-1], next = chapters[i+1];
+  pg.innerHTML = `<button type="button" ${prev ? `data-go="${prev.id}"` : "disabled"}>← Previous</button><button type="button" ${next ? `data-go="${next.id}"` : "disabled"}>Next →</button>`;
+  pg.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) document.getElementById(g.dataset.go).scrollIntoView(); });
+  sec.appendChild(end); sec.appendChild(pg);
+});
+updateProgress();
+
+/* scroll spy */
+const navs = $$("a.nav");
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { navs.forEach(n => n.classList.toggle("on", n.dataset.id === e.target.id)); } });
+}, { rootMargin: "-10% 0px -80% 0px" });
+chapters.forEach(c => io.observe(c));
+
+/* search */
+const texts = chapters.map(c => c.textContent.toLowerCase());
+$("#search").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  navs.forEach((n, i) => { const hit = !q || texts[i].includes(q) || n.textContent.toLowerCase().includes(q); n.classList.toggle("hide", !hit); n.nextElementSibling.classList.toggle("hide", !hit); });
+});
+
+/* theme + mobile menu */
+$("#themebtn").addEventListener("click", () => {
+  const r = document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark";
+});
+$("#menubtn").addEventListener("click", () => document.body.classList.toggle("open"));
+
+/* quiz */
+let correct = 0, answered = 0;
+const box = $("#quizbox");
+QUIZ.forEach((q, qi) => {
+  const d = document.createElement("div"); d.className = "qcard";
+  d.innerHTML = `<h5>${qi+1}. ${esc(q.q).replace(/`([^`]+)`/g,"<code>$1</code>")}</h5>` +
+    q.o.map((o, oi) => `<button type="button" class="opt" data-i="${oi}">${esc(o).replace(/`([^`]+)`/g,"<code>$1</code>")}</button>`).join("") + `<div class="exp hide"></div>`;
+  d.addEventListener("click", e => {
+    const b = e.target.closest(".opt"); if (!b || b.disabled) return;
+    const pick = +b.dataset.i;
+    $$(".opt", d).forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("right"); });
+    if (pick !== q.a) b.classList.add("wrong"); else correct++;
+    answered++;
+    const ex = $(".exp", d); ex.classList.remove("hide"); ex.innerHTML = (pick === q.a ? "Correct. " : "Not quite. ") + esc(q.e).replace(/`([^`]+)`/g,"<code>$1</code>");
+    $("#score").textContent = `Score: ${correct} of ${answered} answered (${QUIZ.length} questions)`;
+  });
+  box.appendChild(d);
+});
+</script>
+</body>
+</html>
